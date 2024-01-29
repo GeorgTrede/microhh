@@ -3,5 +3,5 @@
 .gitignore
 .vscode
 .*
-./cases/*/*.nc
-./cases/*/*0
+cases/*/*.nc
+cases/*/*0
