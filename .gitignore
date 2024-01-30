@@ -5,3 +5,5 @@
 .*
 cases/*/*.nc
 cases/*/*0
+cases/*/local/*0
+cases/*/frames/*

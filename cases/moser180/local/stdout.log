@@ -1,0 +1,108 @@
+Starting run on 1 processes
+Microhh git-hash: not available
+Precision: Double (64-bits floats)
+Simulation name: moser180
+Simulation mode: init
+[grid][xsize]                 =      12.566
+[grid][ysize]                 =      4.1888
+[grid][zsize]                 =           2
+[grid][itot]                  =         256
+[grid][jtot]                  =         192
+[grid][ktot]                  =         128
+[grid][utrans]                =           0   (default)
+[grid][vtrans]                =           0   (default)
+[grid][lat]                   =       -9999   (default)
+[grid][lon]                   =       -9999   (default)
+[grid][swspatialorder]        =           4
+[boundary][swboundary]        =     default   (default)
+[fields][visc]                =       1e-05
+[fields][slist]               =  EMPTY LIST   (default)
+[stats][xymasklist]           =  EMPTY LIST   (default)
+[time][endtime]               =        7200
+[time][savetime]              =        1800
+[time][adaptivestep]          =           1   
+[time][dtmax]                 =          20   
+[time][dt]                    =          20   (default)
+[time][rkorder]               =           3   
+[time][outputiter]            =          20   
+[time][iotimeprec]            =           0   (default)
+[time][datetime_utc]          =               (default)
+[boundary][swboundary]        =     default   (default)
+[boundary][scalar_outflow]    =  EMPTY LIST   (default)
+[advec][swadvec]              =          4m   
+[advec][cflmax]               =           1   (default)
+[diff][swdiff]                =           4   
+[boundary][swboundary]        =     default   (default)
+[diff][dnmax]                 =         0.4   (default)
+[pres][swpres]                =           4   (default)
+[thermo][swthermo]            =           0   (default)
+[micro][swmicro]              =           0   (default)
+[micro][Nc0]                  =          -1   (default)
+[micro][Ni0]                  =          -1   (default)
+[radiation][swradiation]      =           0   (default)
+[force][swlspres]             =       uflux   
+[force][swwls]                =           0   (default)
+[force][swnudge]              =           0   (default)
+[force][swls]                 =           0   (default)
+[force][uflux]                =      0.0282
+[force][swtimedep_wls]        =           0   (default)
+[buffer][swbuffer]            =           0   (default)
+[limiter][limitlist]          =  EMPTY LIST   (default)
+[source][swsource]            =           0   (default)
+[aerosol][swaerosol]          =           0   (default)
+[aerosol][swtimedep]          =           0   (default)
+[radiation][swupdatecolumn]   =           0   (default)
+[IB][sw_immersed_boundary]    =           0   (default)
+[stats][swstats]              =           1   
+[stats][sampletime]           =          60
+[stats][masklist]             =  EMPTY LIST   (default)
+[stats][xymasklist]           =  EMPTY LIST   (default)
+[stats][swtendency]           =           0   (default)
+[stats][whitelist]            =  EMPTY LIST   (default)
+[stats][blacklist]            =  EMPTY LIST   (default)
+[column][swcolumn]            =           0   (default)
+[dump][swdump]                =           0   (default)
+[cross][swcross]              =           1   
+[cross][sampletime]           =          30
+[cross][crosslist]            =       u,v,w
+[cross][xy]                   =   0.5,1,1.5
+[cross][xz]                   =      2.0944
+[cross][yz]                   =  EMPTY LIST   (default)
+[cross][xy_soil]              =  EMPTY LIST   (default)
+[budget][swbudget]            =           1   
+[master][npx]                 =           1   
+[master][npy]                 =           1   
+[master][wallclocklimit]      =       1e+08   (default)
+Allocating temporary field: tmp1
+Allocating temporary field: tmp2
+Allocating temporary field: tmp3
+Allocating temporary field: tmp4
+[boundary][mbcbot]            =      noslip
+[boundary][mbctop]            =      noslip
+[boundary][ubot]              =           0   (default)
+[boundary][utop]              =           0   (default)
+[boundary][vbot]              =           0   (default)
+[boundary][vtop]              =           0   (default)
+[boundary][sbot_2d_list]      =  EMPTY LIST   (default)
+[boundary][scalar_outflow]    =  EMPTY LIST   (default)
+[fields][rndseed]             =           0   (default)
+[fields][rndamp][u]           =      0.0001   
+[fields][rndz][u]             =           2   
+[fields][rndexp][u]           =           0   (default)
+[fields][rndamp][w]           =      0.0001   
+[fields][rndz][w]             =           2   
+[fields][rndexp][w]           =           0   (default)
+[fields][rndamp][v]           =      0.0001   
+[fields][rndz][v]             =           2   
+[fields][rndexp][v]           =           0   (default)
+[fields][vortexnpair]         =           2   
+[fields][vortexamp]           =      0.0025   
+[fields][vortexaxis]          =           x   
+WARNING: Netcdf variable v not found, filling with zeros
+Saving "grid.0000000" ... OK
+Saving "fftwplan.0000000" ... OK
+Saving "u.0000000" ... OK
+Saving "v.0000000" ... OK
+Saving "w.0000000" ... OK
+Saving "time.0000000" ... OK
+Finished run on 1 processes
