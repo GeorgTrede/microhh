@@ -30,8 +30,8 @@ sw_plume_rise = True
 dz = zsize / kmax
 z = np.arange(0.5 * dz, zsize, dz)
 
-z_u = np.array([0, 270, 3000, 5000])/3
-v_u = np.array([2.3, 8.5, 0.6, 5.7])
+z_u = np.array([0, 270, 3000, 5000])
+v_u = np.array([2.3, 8.5, 0.6, 5.7])*0.25
 u = np.interp(z, z_u, v_u)
 
 v = np.zeros(kmax)
