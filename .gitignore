@@ -4,6 +4,7 @@
 .vscode
 .*
 cases/*/*.nc
+cases/*/*.npy
 cases/*/*0
 cases/*/local/*0
 cases/*/frames/*
