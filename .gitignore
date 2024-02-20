@@ -7,4 +7,5 @@ cases/*/*.nc
 cases/*/*.npy
 cases/*/*0
 cases/*/local/*0
+cases/*/tmpfiles/*0
 cases/*/frames/*
