@@ -4,10 +4,11 @@
 .vscode
 .*
 cases/*/*.nc
+cases/*/*/*/*.nc
 cases/*/*.npy
+cases/*/*/*/*.npy
 cases/*/*/*.npy
 cases/*/*.mp4
 cases/*/*0
-cases/*/local/*0
-cases/*/tmpfiles/*0
+cases/*/*/*0
 cases/*/frames/*
