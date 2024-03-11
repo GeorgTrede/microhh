@@ -9,6 +9,7 @@ cases/*/*.npy
 cases/*/*/*/*.npy
 cases/*/*/*.npy
 cases/*/*.mp4
+cases/*/*/*.mp4
 cases/*/*0
 cases/*/*/*0
 cases/*/frames/*
