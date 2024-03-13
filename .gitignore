@@ -6,7 +6,6 @@
 cases/*/*.nc
 cases/*/*/*/*.nc
 cases/*/*.npy
-cases/*/*/*/*.npy
 cases/*/*/*.npy
 cases/*/*.mp4
 cases/*/*/*.mp4
