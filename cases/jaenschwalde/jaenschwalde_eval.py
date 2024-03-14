@@ -8,6 +8,9 @@ from IPython.display import clear_output
 # set plt font size
 plt.rcParams.update({'font.size': 16})
 
+show = plt.close
+# show = plt.show
+
 # %%
 # res = "256_64_192"
 # res = "128_32_96"
@@ -43,17 +46,17 @@ for i in range(co2.shape[1]):  # co2.shape[1] should give the number of heights
 
 # %%
 # load co2_path, co2, u, v, w from npy files
-co2_path = np.load("npy_files/co2_path.npy")
-co2 = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
-u = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
-v = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
-w = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
+# co2_path = np.load("npy_files/co2_path.npy")
+# co2 = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
+# u = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
+# v = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
+# w = np.zeros((co2_path.shape[0], 3, co2_path.shape[1], co2_path.shape[2]))
 
-for i in range(co2.shape[1]):  # co2.shape[1] should give the number of heights
-    co2[:, i, :, :] = np.load(f'npy_files/co2_h{i+1}_xy.npy')
-    u[:, i, :, :] = np.load(f'npy_files/u_h{i+1}_xy.npy')
-    v[:, i, :, :] = np.load(f'npy_files/v_h{i+1}_xy.npy')
-    w[:, i, :, :] = np.load(f'npy_files/w_h{i+1}_xy.npy')
+# for i in range(co2.shape[1]):  # co2.shape[1] should give the number of heights
+#     co2[:, i, :, :] = np.load(f'npy_files/co2_h{i+1}_xy.npy')
+#     u[:, i, :, :] = np.load(f'npy_files/u_h{i+1}_xy.npy')
+#     v[:, i, :, :] = np.load(f'npy_files/v_h{i+1}_xy.npy')
+#     w[:, i, :, :] = np.load(f'npy_files/w_h{i+1}_xy.npy')
 
 # %%
 z_level = 2
@@ -98,8 +101,9 @@ print()
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
-!ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4
-!ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_slow.mp4
+# !ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4
+os.system(f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4")
+os.system(f"ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_slow.mp4")
 
 # %%
 plt.figure(figsize=(20, 12))
@@ -107,7 +111,7 @@ plt.imshow(w[200, z_level], extent=[0, 12.8, 0, 3.2])
 plt.xlabel("x [km]")
 plt.ylabel("y [km]")
 plt.colorbar(shrink=0.2)
-plt.show()
+show()
 
 # %%
 u_mean = np.mean(u[100:], axis=0)
@@ -127,7 +131,7 @@ plt.imshow(w_mean[z_level], extent=[0, 12.8, 0, 3.2], vmin=u_min, vmax=u_max)
 plt.xlabel("x [km]")
 plt.ylabel("y [km]")
 plt.colorbar(shrink=0.2)
-plt.show()
+show()
 
 # %%
 plt.figure(figsize=(15, 6))
@@ -163,10 +167,10 @@ np.save("npy_files/w_xz.npy", w)
 
 # %%
 # load co2, u, v, w from npy files
-co2 = np.load("npy_files/co2_xz.npy")
-u = np.load("npy_files/u_xz.npy")
-v = np.load("npy_files/v_xz.npy")
-w = np.load("npy_files/w_xz.npy")
+# co2 = np.load("npy_files/co2_xz.npy")
+# u = np.load("npy_files/u_xz.npy")
+# v = np.load("npy_files/v_xz.npy")
+# w = np.load("npy_files/w_xz.npy")
 
 # %%
 co2_min, co2_max = np.min(co2), np.max(co2)
@@ -211,8 +215,9 @@ print()
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
-!ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4
-!ffmpeg -y -r 3 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_slow.mp4
+# !ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4
+os.system(f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4")
+os.system(f"ffmpeg -y -r 3 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_slow.mp4")
 
 # %%
 u_mean = np.mean(u[:], axis=0)
@@ -242,7 +247,7 @@ plt.imshow(u_mean[:,0,:], origin="lower", extent=[0, 12.8, 0, 3.2])#, vmin=u_min
 plt.xlabel("x [km]")
 plt.ylabel("y [km]")
 plt.colorbar(shrink=0.2)
-plt.show()
+show()
 
 # %%
 np.mean(tke_time_series[-100:], axis=0)
@@ -268,62 +273,7 @@ ufluxes = sorted(ufluxes)
 plt.plot(ufluxes, TKE_h1, label="h1", marker="o")
 plt.plot(ufluxes, TKE_h2, label="h2", marker="o")
 plt.plot(ufluxes, TKE_h3, label="h3", marker="o")
-plt.show()
+show()
 
 plt.plot(ufluxes, TKE_xy, label="xy", marker="o")
-plt.show()
-
-# %% [markdown]
-# # One cell for execution on server
-
-# %%
-import os
-import numpy as np
-import netCDF4 as nc
-
-# res = "256_64_192"
-# res = "128_32_96"
-res = "64_16_48"
-uflux = "2"
-
-os.chdir("/Users/georg/Studium/Master/Thesis/env/microhh/cases/jaenschwalde/snaps_{}_uflux{}".format(res, uflux))
-
-ds_co2_path = nc.Dataset("nc_files/co2_path.xy.nc")
-ds_co2 = nc.Dataset("nc_files/co2.xy.nc")
-ds_u = nc.Dataset("nc_files/u.xy.nc")
-ds_v = nc.Dataset("nc_files/v.xy.nc")
-ds_w = nc.Dataset("nc_files/w.xy.nc")
-
-co2_path = np.array(ds_co2_path.variables["co2_path"][:])
-co2 = np.array(ds_co2.variables["co2"][:])
-u = np.array(ds_u.variables["u"][:])
-v = np.array(ds_v.variables["v"][:])
-w = np.array(ds_w.variables["w"][:])
-
-z = np.array(ds_co2.variables["z"][:])
-
-# save co2_path, co2, u, v, w
-np.save("npy_files/co2_path.npy", co2_path)
-for i in range(co2.shape[1]):  # co2.shape[1] should give the number of heights
-np.save(f'npy_files/co2_h{i+1}_xy.npy', co2[:, i, :, :])
-np.save(f'npy_files/u_h{i+1}_xy.npy', u[:, i, :, :])
-np.save(f'npy_files/v_h{i+1}_xy.npy', v[:, i, :, :])
-np.save(f'npy_files/w_h{i+1}_xy.npy', w[:, i, :, :])
-
-ds_co2 = nc.Dataset("nc_files/co2.xz.nc")
-ds_u = nc.Dataset("nc_files/u.xz.nc")
-ds_v = nc.Dataset("nc_files/v.xz.nc")
-ds_w = nc.Dataset("nc_files/w.xz.nc")
-
-co2 = np.array(ds_co2.variables["co2"][:])
-u = np.array(ds_u.variables["u"][:])
-v = np.array(ds_v.variables["v"][:])
-w = np.array(ds_w.variables["w"][:])
-
-# save co2, u, v, w
-np.save("npy_files/co2_xz.npy", co2)
-np.save("npy_files/u_xz.npy", u)
-np.save("npy_files/v_xz.npy", v)
-np.save("npy_files/w_xz.npy", w)
-
-
+show()
