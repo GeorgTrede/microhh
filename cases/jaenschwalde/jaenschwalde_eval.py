@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import netCDF4 as nc
 import os
 from IPython.display import clear_output
+import multiprocessing
 
 # set plt font size
 plt.rcParams.update({'font.size': 16})
@@ -70,24 +71,24 @@ w_range = w_max - w_min
 w_min, w_max = w_min + 0.1 * w_range, w_max - 0.1 * w_range
 
 # %%
-for i in range(len(co2_path)):
+def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_min, u_max, w_min, w_max):
     print(f"\rFrame {i+1:3d}/{len(co2_path):3d}", end="")
     plt.figure(figsize=(15, 12))
     plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
     plt.subplot(3, 1, 1)
-    plt.imshow(co2_path[i], vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 3.2])
+    plt.imshow(co2_slice, vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 3.2])
     plt.title("CO2 (integrated)")
     plt.xlabel("x [km]")
     plt.ylabel("y [km]")
     plt.colorbar(shrink=0.7)
     plt.subplot(3, 1, 2)
-    plt.imshow(u[i, z_level], vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 3.2])
+    plt.imshow(u_slice, vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 3.2])
     plt.title(f"u (at z={int(z[2])}m, in m/s)")
     plt.xlabel("x [km]")
     plt.ylabel("y [km]")
     plt.colorbar(shrink=0.7)
     plt.subplot(3, 1, 3)
-    plt.imshow(w[i, z_level], vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 3.2])
+    plt.imshow(w_slice, vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 3.2])
     plt.title(f"w (at z={int(z[2])}m, in m/s)")
     plt.xlabel("x [km]")
     plt.ylabel("y [km]")
@@ -95,9 +96,9 @@ for i in range(len(co2_path)):
     plt.tight_layout()
     plt.savefig(f"../frames/xy_{i:04d}.png")
     plt.close()
-    # plt.pause(0.01)
-    # clear_output(wait=True)
-print()
+
+with multiprocessing.Pool() as pool:
+    pool.starmap(process_frame, [(i, co2_path[i], u[i, z_level], w[i, z_level], z_level, z, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
 
 # %%
 # make video with all frames using ffmpeg with 10 fps

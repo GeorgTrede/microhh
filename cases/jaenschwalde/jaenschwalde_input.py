@@ -62,11 +62,11 @@ co2 = np.zeros(kmax)
 
 # Surface fluxes, again idealised from ERA5.
 t0 = 4 * 3600
-t1 = 72 * 3600
+t1 = 16 * 3600
 td1 = 12 * 3600
 td2 = 14 * 3600
 
-time = np.linspace(t0, t1, 192)
+time = np.linspace(t0, t1, 32)
 wthl = 0.17 * np.sin(np.pi * (time - t0) / td1)
 wqt = 8.3e-5 * np.sin(np.pi * (time - t0) / td2)
 
