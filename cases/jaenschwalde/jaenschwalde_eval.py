@@ -16,7 +16,7 @@ show = plt.close
 # res = "256_64_192"
 # res = "128_32_96"
 res = "64_16_48"
-uflux = "2"
+uflux = "X"
 
 os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/jaenschwalde/snaps_{}_uflux{}".format(res, uflux))
 
@@ -107,12 +107,12 @@ os.system(f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix
 os.system(f"ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_slow.mp4")
 
 # %%
-plt.figure(figsize=(20, 12))
-plt.imshow(w[200, z_level], extent=[0, 12.8, 0, 3.2])
-plt.xlabel("x [km]")
-plt.ylabel("y [km]")
-plt.colorbar(shrink=0.2)
-show()
+# plt.figure(figsize=(20, 12))
+# plt.imshow(w[200, z_level], extent=[0, 12.8, 0, 3.2])
+# plt.xlabel("x [km]")
+# plt.ylabel("y [km]")
+# plt.colorbar(shrink=0.2)
+# show()
 
 # %%
 u_mean = np.mean(u[100:], axis=0)
