@@ -159,6 +159,8 @@ u = np.array(ds_u.variables["u"][:])
 v = np.array(ds_v.variables["v"][:])
 w = np.array(ds_w.variables["w"][:])
 
+y = np.array(ds_co2.variables["y"][:])
+
 # %%
 # save co2, u, v, w
 np.save("npy_files/co2_xz.npy", co2)
@@ -182,37 +184,35 @@ w_min, w_max = np.min(w), np.max(w)
 w_range = w_max - w_min
 w_min, w_max = w_min + 0.1*w_range, w_max - 0.1*w_range
 
-for i in range(len(co2)):
-    print(f"\rFrame {i+1:3d}/{len(co2):3d}", end="")
-    plt.figure(figsize=(10, 10))
+def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max, u_min, u_max, w_min, w_max):
+    print(f"\rFrame {i+1:3d}/{len(co2_path):3d}", end="")
+    plt.figure(figsize=(15, 12))
     plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
     plt.subplot(3, 1, 1)
-    plt.imshow(co2[i, :, 0, :], origin="lower", vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 5.0],
-    aspect=0.75)
-    plt.title("CO2 (at y=1.6km)")
+    plt.imshow(co2_slice, vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 3.2])
+    plt.title("CO2 (integrated)")
     plt.xlabel("x [km]")
-    plt.ylabel("z [km]")
+    plt.ylabel("z [m]")
     plt.colorbar(shrink=0.7)
     plt.subplot(3, 1, 2)
-    plt.imshow(u[i, :, 0, :], origin="lower", vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 5.0],
-    aspect=0.75)
-    plt.title("u (at y=1.6km, in m/s)")
+    plt.imshow(u_slice, vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 3.2])
+    plt.title(f"u (at y={int(y[y_level])}km, in m/s)")
     plt.xlabel("x [km]")
-    plt.ylabel("z [km]")
+    plt.ylabel("z [m]")
     plt.colorbar(shrink=0.7)
     plt.subplot(3, 1, 3)
-    plt.imshow(w[i, :, 0, :], origin="lower", vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 5.0],
-    aspect=0.75)
-    plt.title("w (at y=1.6km, in m/s)")
+    plt.imshow(w_slice, vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 3.2])
+    plt.title(f"w (at y={int(y[y_level])}km, in m/s)")
     plt.xlabel("x [km]")
-    plt.ylabel("z [km]")
+    plt.ylabel("z [m]")
     plt.colorbar(shrink=0.7)
     plt.tight_layout()
     plt.savefig(f"../frames/xz_{i:04d}.png")
     plt.close()
-    # plt.pause(0.01)
-    # clear_output(wait=True)
-print()
+
+y_level = 1
+with multiprocessing.Pool() as pool:
+    pool.starmap(process_frame_xz, [(i, co2[i, :, y_level], u[i, :, y_level], w[i, :, y_level], y_level, y, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
