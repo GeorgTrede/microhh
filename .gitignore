@@ -4,6 +4,7 @@
 .vscode
 .*
 cases/*/*.nc
+cases/*/*/*.nc
 cases/*/*/*/*.nc
 cases/*/*.npy
 cases/*/*/*/*.npy
