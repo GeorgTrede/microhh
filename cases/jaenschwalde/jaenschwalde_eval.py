@@ -20,11 +20,11 @@ uflux = "X"
 os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/jaenschwalde/snaps_{}_uflux{}".format(res, uflux))
 
 # %%
-ds_co2_path_xy = nc.Dataset("nc_files/co2_path.xy.nc")
-ds_co2_xy = nc.Dataset("nc_files/co2.xy.nc")
-ds_u_xy = nc.Dataset("nc_files/u.xy.nc")
-ds_v_xy = nc.Dataset("nc_files/v.xy.nc")
-ds_w_xy = nc.Dataset("nc_files/w.xy.nc")
+ds_co2_path_xy = nc.Dataset("nc_files/co2_path.xy.nc") # type: ignore
+ds_co2_xy = nc.Dataset("nc_files/co2.xy.nc") # type: ignore
+ds_u_xy = nc.Dataset("nc_files/u.xy.nc") # type: ignore
+ds_v_xy = nc.Dataset("nc_files/v.xy.nc") # type: ignore
+ds_w_xy = nc.Dataset("nc_files/w.xy.nc") # type: ignore
 
 # %%
 co2_path_xy = np.array(ds_co2_path_xy.variables["co2_path"][:])
@@ -97,7 +97,7 @@ def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_
     plt.close()
 
 with multiprocessing.Pool() as pool:
-    pool.starmap(process_frame, [(i, co2_path_xy[i], u_xy[i, z_level], w_xy[i, z_level], z_level, z_xy, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
+    pool.starmap(process_frame, [(i, co2_path_xy[i], u_xy[i, z_level], w_xy[i, z_level], z_level, z_xy, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path_xy))])
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
@@ -140,17 +140,17 @@ plt.plot(tke_time_series)
 plt.xlabel("Time [s]")
 plt.xticks(np.arange(0, 340, 50), np.arange(0, 340*300, 50*300))
 plt.ylabel("avg'd TKE [m²/s²]")
-plt.legend([f"h{i+1}={int(z[i])}m" for i in range(len(z))])
+plt.legend([f"h{i+1}={int(z_xy[i])}m" for i in range(len(z_xy))])
 plt.savefig(f"../tke_{res}_uflux{uflux}.png")
 
 # %%
 np.mean(tke_time_series[-100:], axis=0)
 
 # %%
-ds_co2_xz = nc.Dataset("nc_files/co2.xz.nc")
-ds_u_xz = nc.Dataset("nc_files/u.xz.nc")
-ds_v_xz = nc.Dataset("nc_files/v.xz.nc")
-ds_w_xz = nc.Dataset("nc_files/w.xz.nc")
+ds_co2_xz = nc.Dataset("nc_files/co2.xz.nc") # type: ignore
+ds_u_xz = nc.Dataset("nc_files/u.xz.nc") # type: ignore
+ds_v_xz = nc.Dataset("nc_files/v.xz.nc") # type: ignore
+ds_w_xz = nc.Dataset("nc_files/w.xz.nc") # type: ignore
 
 # %%
 co2_xz = np.array(ds_co2_xz.variables["co2"][:])
@@ -211,7 +211,7 @@ def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max,
 
 y_level = 1
 with multiprocessing.Pool() as pool:
-    pool.starmap(process_frame_xz, [(i, co2_xz[i, :, y_level], u_xz[i, :, y_level], w_xz[i, :, y_level], y_level, y_xz, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
+    pool.starmap(process_frame_xz, [(i, co2_xz[i, :, y_level], u_xz[i, :, y_level], w_xz[i, :, y_level], y_level, y_xz, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_xz))])
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
