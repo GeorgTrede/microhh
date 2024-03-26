@@ -45,13 +45,13 @@ sw_plume_rise = True
 dz = float(zsize) / kmax
 z = np.arange(0.5 * dz, zsize, dz)
 
-v_thl = np.array([285.7, 291.9, 293, 297.4, 307])
-z_thl = np.array([0, 400, 2000, 2500, 5000])
-thl = np.interp(z, z_thl, v_thl)
+# v_thl = np.array([285.7, 291.9, 293, 297.4, 307])
+# z_thl = np.array([0, 400, 2000, 2500, 5000])
+# thl = np.interp(z, z_thl, v_thl)
 
-z_qt = np.array([0, 400, 2000, 2500, 5000])
-v_qt = np.array([6.2, 4.93, 3.61, 1, 0.3]) / 1000
-qt = np.interp(z, z_qt, v_qt)
+# z_qt = np.array([0, 400, 2000, 2500, 5000])
+# v_qt = np.array([6.2, 4.93, 3.61, 1, 0.3]) / 1000
+# qt = np.interp(z, z_qt, v_qt)
 
 z_u = np.array([0, 270, 3000, 5000])
 v_u = np.array([2.3, 8.5, 0.6, 5.7])
@@ -79,16 +79,16 @@ nc_z = nc_file.createVariable("z", float_type, ("z"))
 nc_group_init = nc_file.createGroup("init")
 nc_u = nc_group_init.createVariable("u", float_type, ("z"))
 nc_v = nc_group_init.createVariable("v", float_type, ("z"))
-nc_th = nc_group_init.createVariable("thl", float_type, ("z"))
-nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
+# nc_th = nc_group_init.createVariable("thl", float_type, ("z"))
+# nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
 nc_co2 = nc_group_init.createVariable("co2", float_type, ("z"))
 nc_co2_inflow = nc_group_init.createVariable("co2_inflow", float_type, ("z"))
 
 nc_z[:] = z[:]
 nc_u[:] = u[:]
 nc_v[:] = v[:]
-nc_th[:] = thl[:]
-nc_qt[:] = qt[:]
+# nc_th[:] = thl[:]
+# nc_qt[:] = qt[:]
 nc_co2[:] = co2[:]
 nc_co2_inflow[:] = co2[:]
 
