@@ -3,7 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import netCDF4 as nc
 import os
-from IPython.display import clear_output
 import multiprocessing
 
 # set plt font size
