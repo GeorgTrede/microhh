@@ -21,29 +21,29 @@ uflux = "X"
 os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/jaenschwalde/snaps_{}_uflux{}".format(res, uflux))
 
 # %%
-ds_co2_path = nc.Dataset("nc_files/co2_path.xy.nc")
-ds_co2 = nc.Dataset("nc_files/co2.xy.nc")
-ds_u = nc.Dataset("nc_files/u.xy.nc")
-ds_v = nc.Dataset("nc_files/v.xy.nc")
-ds_w = nc.Dataset("nc_files/w.xy.nc")
+ds_co2_path_xy = nc.Dataset("nc_files/co2_path.xy.nc")
+ds_co2_xy = nc.Dataset("nc_files/co2.xy.nc")
+ds_u_xy = nc.Dataset("nc_files/u.xy.nc")
+ds_v_xy = nc.Dataset("nc_files/v.xy.nc")
+ds_w_xy = nc.Dataset("nc_files/w.xy.nc")
 
 # %%
-co2_path = np.array(ds_co2_path.variables["co2_path"][:])
-co2 = np.array(ds_co2.variables["co2"][:])
-u = np.array(ds_u.variables["u"][:])
-v = np.array(ds_v.variables["v"][:])
-w = np.array(ds_w.variables["w"][:])
+co2_path_xy = np.array(ds_co2_path_xy.variables["co2_path"][:])
+co2_xy = np.array(ds_co2_xy.variables["co2"][:])
+u_xy = np.array(ds_u_xy.variables["u"][:])
+v_xy = np.array(ds_v_xy.variables["v"][:])
+w_xy = np.array(ds_w_xy.variables["w"][:])
 
-z = np.array(ds_co2.variables["z"][:])
+z_xy = np.array(ds_co2_xy.variables["z"][:])
 
 # %%
 # save co2_path, co2, u, v, w
-np.save("npy_files/co2_path.npy", co2_path)
-for i in range(co2.shape[1]):  # co2.shape[1] should give the number of heights
-    np.save(f'npy_files/co2_h{i+1}_xy.npy', co2[:, i, :, :])
-    np.save(f'npy_files/u_h{i+1}_xy.npy', u[:, i, :, :])
-    np.save(f'npy_files/v_h{i+1}_xy.npy', v[:, i, :, :])
-    np.save(f'npy_files/w_h{i+1}_xy.npy', w[:, i, :, :])
+np.save("npy_files/co2_path.npy", co2_path_xy)
+for i in range(co2_xy.shape[1]):  # co2.shape[1] should give the number of heights
+    np.save(f'npy_files/co2_h{i+1}_xy.npy', co2_xy[:, i, :, :])
+    np.save(f'npy_files/u_h{i+1}_xy.npy', u_xy[:, i, :, :])
+    np.save(f'npy_files/v_h{i+1}_xy.npy', v_xy[:, i, :, :])
+    np.save(f'npy_files/w_h{i+1}_xy.npy', w_xy[:, i, :, :])
 
 # %%
 # load co2_path, co2, u, v, w from npy files
@@ -62,17 +62,17 @@ for i in range(co2.shape[1]):  # co2.shape[1] should give the number of heights
 # %%
 z_level = 2
 
-co2_min, co2_max = np.min(co2_path), np.max(co2_path)
-u_min, u_max = np.min(u[:, z_level]), np.max(u[:, z_level])
+co2_min, co2_max = np.min(co2_path_xy), np.max(co2_path_xy)
+u_min, u_max = np.min(u_xy[:, z_level]), np.max(u_xy[:, z_level])
 u_range = u_max - u_min
 u_min, u_max = u_min + 0.1 * u_range, u_max - 0.1 * u_range
-w_min, w_max = np.min(w[:, z_level]), np.max(w[:, z_level])
+w_min, w_max = np.min(w_xy[:, z_level]), np.max(w_xy[:, z_level])
 w_range = w_max - w_min
 w_min, w_max = w_min + 0.1 * w_range, w_max - 0.1 * w_range
 
 # %%
 def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_min, u_max, w_min, w_max):
-    print(f"\rFrame {i+1:3d}/{len(co2_path):3d}", end="")
+    print(f"\rFrame {i+1:3d}/{len(co2_path_xy):3d}", end="")
     plt.figure(figsize=(15, 12))
     plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
     plt.subplot(3, 1, 1)
@@ -98,7 +98,7 @@ def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_
     plt.close()
 
 with multiprocessing.Pool() as pool:
-    pool.starmap(process_frame, [(i, co2_path[i], u[i, z_level], w[i, z_level], z_level, z, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
+    pool.starmap(process_frame, [(i, co2_path_xy[i], u_xy[i, z_level], w_xy[i, z_level], z_level, z_xy, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
@@ -115,20 +115,20 @@ os.system(f"ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix
 # show()
 
 # %%
-u_mean = np.mean(u[100:], axis=0)
-v_mean = np.mean(v[100:], axis=0)
-w_mean = np.mean(w[100:], axis=0)
+u_xy_mean = np.mean(u_xy[100:], axis=0)
+v_xy_mean = np.mean(v_xy[100:], axis=0)
+w_xy_mean = np.mean(w_xy[100:], axis=0)
 
-u_prime = u - u_mean
-v_prime = v - v_mean
-w_prime = w - w_mean
+u_prime = u_xy - u_xy_mean
+v_prime = v_xy - v_xy_mean
+w_prime = w_xy - w_xy_mean
 
 tke = 0.5 * (u_prime**2 + v_prime**2 + w_prime**2)
 tke_time_series = np.mean(tke, axis=(2, 3))
 
 # %%
 plt.figure(figsize=(20, 12))
-plt.imshow(w_mean[z_level], extent=[0, 12.8, 0, 3.2], vmin=u_min, vmax=u_max)
+plt.imshow(w_xy_mean[z_level], extent=[0, 12.8, 0, 3.2], vmin=u_min, vmax=u_max)
 plt.xlabel("x [km]")
 plt.ylabel("y [km]")
 plt.colorbar(shrink=0.2)
@@ -148,25 +148,25 @@ plt.savefig(f"../tke_{res}_uflux{uflux}.png")
 np.mean(tke_time_series[-100:], axis=0)
 
 # %%
-ds_co2 = nc.Dataset("nc_files/co2.xz.nc")
-ds_u = nc.Dataset("nc_files/u.xz.nc")
-ds_v = nc.Dataset("nc_files/v.xz.nc")
-ds_w = nc.Dataset("nc_files/w.xz.nc")
+ds_co2_xz = nc.Dataset("nc_files/co2.xz.nc")
+ds_u_xz = nc.Dataset("nc_files/u.xz.nc")
+ds_v_xz = nc.Dataset("nc_files/v.xz.nc")
+ds_w_xz = nc.Dataset("nc_files/w.xz.nc")
 
 # %%
-co2 = np.array(ds_co2.variables["co2"][:])
-u = np.array(ds_u.variables["u"][:])
-v = np.array(ds_v.variables["v"][:])
-w = np.array(ds_w.variables["w"][:])
+co2_xz = np.array(ds_co2_xz.variables["co2"][:])
+u_xz = np.array(ds_u_xz.variables["u"][:])
+v_xz = np.array(ds_v_xz.variables["v"][:])
+w_xz = np.array(ds_w_xz.variables["w"][:])
 
-y = np.array(ds_co2.variables["y"][:])
+y_xz = np.array(ds_co2_xz.variables["y"][:])
 
 # %%
 # save co2, u, v, w
-np.save("npy_files/co2_xz.npy", co2)
-np.save("npy_files/u_xz.npy", u)
-np.save("npy_files/v_xz.npy", v)
-np.save("npy_files/w_xz.npy", w)
+np.save("npy_files/co2_xz.npy", co2_xz)
+np.save("npy_files/u_xz.npy", u_xz)
+np.save("npy_files/v_xz.npy", v_xz)
+np.save("npy_files/w_xz.npy", w_xz)
 
 # %%
 # load co2, u, v, w from npy files
@@ -176,16 +176,16 @@ np.save("npy_files/w_xz.npy", w)
 # w = np.load("npy_files/w_xz.npy")
 
 # %%
-co2_min, co2_max = np.min(co2), np.max(co2)
-u_min, u_max = np.min(u), np.max(u)
+co2_min, co2_max = np.min(co2_xz), np.max(co2_xz)
+u_min, u_max = np.min(u_xz), np.max(u_xz)
 u_range = u_max - u_min
 u_min, u_max = u_min + 0.1*u_range, u_max - 0.1*u_range
-w_min, w_max = np.min(w), np.max(w)
+w_min, w_max = np.min(w_xz), np.max(w_xz)
 w_range = w_max - w_min
 w_min, w_max = w_min + 0.1*w_range, w_max - 0.1*w_range
 
 def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max, u_min, u_max, w_min, w_max):
-    print(f"\rFrame {i+1:3d}/{len(co2_path):3d}", end="")
+    print(f"\rFrame {i+1:3d}/{len(co2_xz):3d}", end="")
     plt.figure(figsize=(15, 12))
     plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
     plt.subplot(3, 1, 1)
@@ -212,7 +212,7 @@ def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max,
 
 y_level = 1
 with multiprocessing.Pool() as pool:
-    pool.starmap(process_frame_xz, [(i, co2[i, :, y_level], u[i, :, y_level], w[i, :, y_level], y_level, y, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
+    pool.starmap(process_frame_xz, [(i, co2_xz[i, :, y_level], u_xz[i, :, y_level], w_xz[i, :, y_level], y_level, y_xz, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path))])
 
 # %%
 # make video with all frames using ffmpeg with 10 fps
@@ -221,13 +221,13 @@ os.system(f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix
 os.system(f"ffmpeg -y -r 3 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_slow.mp4")
 
 # %%
-u_mean = np.mean(u[:], axis=0)
-v_mean = np.mean(v[:], axis=0)
-w_mean = np.mean(w[:], axis=0)
+u_xz_mean = np.mean(u_xz[:], axis=0)
+v_xz_mean = np.mean(v_xz[:], axis=0)
+w_xz_mean = np.mean(w_xz[:], axis=0)
 
-u_prime = u - u_mean
-v_prime = v - v_mean
-w_prime = w - w_mean
+u_prime = u_xz - u_xz_mean
+v_prime = v_xz - v_xz_mean
+w_prime = w_xz - w_xz_mean
 
 tke = 0.5 * (u_prime**2 + v_prime**2 + w_prime**2)
 tke_time_series = np.mean(tke, axis=(1, 3))
@@ -244,7 +244,7 @@ plt.savefig(f"../tke_{res}_uflux{uflux}_xz.png")
 
 # %%
 plt.figure(figsize=(20, 12))
-plt.imshow(u_mean[:,0,:], origin="lower", extent=[0, 12.8, 0, 3.2])#, vmin=u_min, vmax=u_max)
+plt.imshow(u_xz_mean[:,0,:], origin="lower", extent=[0, 12.8, 0, 3.2])#, vmin=u_min, vmax=u_max)
 plt.xlabel("x [km]")
 plt.ylabel("y [km]")
 plt.colorbar(shrink=0.2)
