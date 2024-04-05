@@ -4,8 +4,8 @@ python3 ${1}_input.py
 # find number of processes needed
 # -> stored in .ini file under [master] -> npx, npy
 #    but make sure that commented lines are not included, i.e. lines starting with #
-npx=$(awk -F "=" '/np_x/ && !/#/ {print $2}' ${1}.ini)
-npy=$(awk -F "=" '/np_y/ && !/#/ {print $2}' ${1}.ini)
+npx=$(awk -F "=" '/npx/ && !/#/ {print $2}' ${1}.ini)
+npy=$(awk -F "=" '/npy/ && !/#/ {print $2}' ${1}.ini)
 proc=$(($npx * $npy))
 
 # check which microhh version to use:
@@ -45,7 +45,7 @@ mkdir -p snaps_${res}_${uflux}/nc_files
 mkdir -p snaps_${res}_${uflux}/npy_files
 
 # run cross_to_nc.py
-python3 cross_to_nc.py ${1} -n ${proc}
+python3 cross_to_nc.py -n ${proc}
 
 # move the created .nc files to snaps_res_uflux/nc_files
 mv *.nc snaps_${res}_${uflux}/nc_files
