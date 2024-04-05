@@ -39,6 +39,7 @@ if [ $(awk -F "=" '/swlpres/ && !/#/ {print $2}' ${1}.ini) == "uflux" ]; then
 else
     uflux="X"
 fi
+uflux="uflux${uflux}"
 
 # create folders snaps_res_uflux/nc_files and snaps_res_uflux/npy_files
 mkdir -p snaps_${res}_${uflux}/nc_files
