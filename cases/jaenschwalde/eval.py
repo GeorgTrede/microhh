@@ -12,6 +12,11 @@ plt.rcParams.update({'font.size': 16})
 show = plt.close
 # show = plt.show
 
+if len(sys.argv) > 1:
+    folder = sys.argv[1]
+else:
+    folder = "jaenschwalde"
+
 # %%
 # res = "256_64_192"
 # res = "128_32_96"
@@ -21,7 +26,7 @@ itot = 128
 jtot = 32
 ktot = 96
 # read res and uflux from .ini file
-with open("jaenschwalde.ini") as f:
+with open(f"{folder}.ini") as f:
     for line in f:
         if line.split("=")[0] == "itot":
             itot = line.split("=")[1].strip()
@@ -35,10 +40,6 @@ with open("jaenschwalde.ini") as f:
 
 print(f"res={res}, uflux={uflux}")
 
-if len(sys.argv) > 1:
-    folder = sys.argv[1]
-else:
-    folder = "jaenschwalde"
 
 if "--no-frames" in sys.argv:
     no_frames = True
