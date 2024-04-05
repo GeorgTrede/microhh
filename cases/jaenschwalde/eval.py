@@ -2,7 +2,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import netCDF4 as nc
-import os, sys
+import os
+import sys
 import multiprocessing
 
 # set plt font size
