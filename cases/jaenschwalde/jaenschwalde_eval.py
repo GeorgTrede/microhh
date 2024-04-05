@@ -2,7 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import netCDF4 as nc
-import os
+import os, sys
 import multiprocessing
 
 # set plt font size
@@ -17,7 +17,12 @@ show = plt.close
 res = "64_16_48"
 uflux = "X"
 
-os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/jaenschwalde/snaps_{}_uflux{}".format(res, uflux))
+if len(sys.argv) > 1:
+    folder = sys.argv[1]
+else:
+    folder = "jaenschwalde"
+
+os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/{}/snaps_{}_uflux{}".format(folder, res, uflux))
 
 # %%
 ds_co2_path_xy = nc.Dataset("nc_files/co2_path.xy.nc") # type: ignore
