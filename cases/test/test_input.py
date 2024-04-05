@@ -37,15 +37,15 @@ u = np.interp(z, z_u, v_u)
 v = np.zeros(kmax)
 co2 = np.zeros(kmax)
 
-# Surface fluxes, again idealised from ERA5.
-t0 = 4 * 3600
-t1 = 16 * 3600
-td1 = 12 * 3600
-td2 = 14 * 3600
+# # Surface fluxes, again idealised from ERA5.
+# t0 = 4 * 3600
+# t1 = 16 * 3600
+# td1 = 12 * 3600
+# td2 = 14 * 3600
 
-time = np.linspace(t0, t1, 32)
-wthl = 0.17   * np.sin(np.pi * (time-t0) / td1)
-wqt  = 8.3e-5 * np.sin(np.pi * (time-t0) / td2)
+# time = np.linspace(t0, t1, 32)
+# wthl = 0.17   * np.sin(np.pi * (time-t0) / td1)
+# wqt  = 8.3e-5 * np.sin(np.pi * (time-t0) / td2)
 
 # Write input NetCDF file
 nc_file = nc.Dataset(
@@ -67,16 +67,16 @@ nc_v[:] = v[:]
 nc_co2[:] = co2[:]
 nc_co2_inflow[:] = co2[:]
 
-nc_group_tdep = nc_file.createGroup("timedep")
-nc_group_tdep.createDimension("time_surface", time.size)
-nc_time_surface = nc_group_tdep.createVariable(
-    "time_surface", float_type, ("time_surface")
-)
-nc_thl_sbot = nc_group_tdep.createVariable("thl_sbot", float_type, ("time_surface"))
-nc_qt_sbot = nc_group_tdep.createVariable("qt_sbot" , float_type, ("time_surface"))
+# nc_group_tdep = nc_file.createGroup("timedep")
+# nc_group_tdep.createDimension("time_surface", time.size)
+# nc_time_surface = nc_group_tdep.createVariable(
+#     "time_surface", float_type, ("time_surface")
+# )
+# nc_thl_sbot = nc_group_tdep.createVariable("thl_sbot", float_type, ("time_surface"))
+# nc_qt_sbot = nc_group_tdep.createVariable("qt_sbot" , float_type, ("time_surface"))
 
-nc_time_surface[:] = time
-nc_thl_sbot[:] = wthl
-nc_qt_sbot[:] = wqt
+# nc_time_surface[:] = time
+# nc_thl_sbot[:] = wthl
+# nc_qt_sbot[:] = wqt
 
 nc_file.close()
