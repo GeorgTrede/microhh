@@ -41,10 +41,10 @@ with open(f"{folder}.ini") as f:
 print(f"res={res}, uflux={uflux}")
 
 
-if "--no-frames" in sys.argv:
-    no_frames = True
-else:
+if "--with-frames" in sys.argv:
     no_frames = False
+else:
+    no_frames = True
 
 os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/{}/snaps_{}_uflux{}".format(folder, res, uflux))
 
