@@ -64,7 +64,7 @@ for i in range(co2_xy.shape[1]):  # co2.shape[1] should give the number of heigh
 #     w[:, i, :, :] = np.load(f'npy_files/w_h{i+1}_xy.npy')
 
 # %%
-z_level = 2
+z_level = 0
 
 co2_min, co2_max = np.min(co2_path_xy), np.max(co2_path_xy)
 u_min, u_max = np.min(u_xy[:, z_level]), np.max(u_xy[:, z_level])
@@ -87,13 +87,13 @@ def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_
     plt.colorbar(shrink=0.7)
     plt.subplot(3, 1, 2)
     plt.imshow(u_slice, vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 3.2])
-    plt.title(f"u (at z={int(z[2])}m, in m/s)")
+    plt.title(f"u (at z={int(z[z_level])}m, in m/s)")
     plt.xlabel("x [km]")
     plt.ylabel("y [km]")
     plt.colorbar(shrink=0.7)
     plt.subplot(3, 1, 3)
     plt.imshow(w_slice, vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 3.2])
-    plt.title(f"w (at z={int(z[2])}m, in m/s)")
+    plt.title(f"w (at z={int(z[z_level])}m, in m/s)")
     plt.xlabel("x [km]")
     plt.ylabel("y [km]")
     plt.colorbar(shrink=0.7)
@@ -214,7 +214,7 @@ def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max,
     plt.savefig(f"../frames/xz_{i:04d}.png")
     plt.close()
 
-y_level = 1
+y_level = 0
 with multiprocessing.Pool() as pool:
     pool.starmap(process_frame_xz, [(i, co2_xz[i, :, y_level], u_xz[i, :, y_level], w_xz[i, :, y_level], y_level, y_xz, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_xz))])
 
