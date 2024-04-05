@@ -34,7 +34,7 @@ res="${itot}_${jtot}_${ktot}"
 #    also, this only exists if [force] -> swlpres=uflux,
 #    otherwise set to "X"
 
-if [ $(awk -F "=" '/swlpres/ && !/#/ {print $2}' ${1}.ini) == "uflux" ]; then
+if [ $(awk -F "=" '/swlspres/ && !/#/ {print $2}' ${1}.ini) -eq "uflux" ]; then
     uflux=$(awk -F "=" '/uflux/ && !/#/ {print $2}' ${1}.ini)
 else
     uflux="X"
