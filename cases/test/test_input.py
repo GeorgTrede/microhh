@@ -1,9 +1,3 @@
-"""
-Simplified Jaenschwalde setup.
-Profiles are slightly idealised, from 04:00 UTC ERA5 data.
-Wind is rotated to be perfectly westerly.
-"""
-
 import matplotlib.pyplot as pl
 import numpy as np
 import netCDF4 as nc
