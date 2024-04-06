@@ -36,6 +36,8 @@ res="${itot}_${jtot}_${ktot}"
 
 if [ $(awk -F "=" '/swlspres/ && !/#/ {print $2}' ${1}.ini) -eq "uflux" ]; then
     uflux=$(awk -F "=" '/uflux/ && !/#/ {print $2}' ${1}.ini)
+    # round uflux to nearest integer
+    uflux=$(echo $uflux | awk '{print int($1+0.5)}')
 else
     uflux="X"
 fi
@@ -51,8 +53,8 @@ python3 cross_to_nc.py -n ${proc}
 # move the created .nc files to snaps_res_uflux/nc_files
 mv *.nc snaps_${res}_${uflux}/nc_files
 
-# run eval.py
-python3 eval.py ${1}
+# run eval.py and discard the output
+python3 eval.py ${1} > /dev/null
 
 # move all files *.00* and *.01* to snaps_res_uflux/
 mv *.00* snaps_${res}_${uflux}
