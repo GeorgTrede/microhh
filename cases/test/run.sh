@@ -55,7 +55,7 @@ python3 cross_to_nc.py -n ${proc}
 mv *.nc snaps_${res}_${uflux}/nc_files
 
 # run eval.py and suppress the output violently
-python3 eval.py ${1} > /dev/null 2>&1
+python3 eval.py $@ > /dev/null 2>&1
 
 # move all files *.00* and *.01* to snaps_res_uflux/
 mv *.00* snaps_${res}_${uflux}
