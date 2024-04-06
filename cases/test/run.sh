@@ -48,14 +48,14 @@ uflux="uflux${uflux}"
 mkdir -p snaps_${res}_${uflux}/nc_files
 mkdir -p snaps_${res}_${uflux}/npy_files
 
-# run cross_to_nc.py
-python3 cross_to_nc.py -n ${proc}
+# run cross_to_nc.py and suppress the output violently
+python3 cross_to_nc.py -n ${proc} -r ${res} -u ${uflux} > /dev/null 2>&1
 
 # move the created .nc files to snaps_res_uflux/nc_files
 mv *.nc snaps_${res}_${uflux}/nc_files
 
-# run eval.py and suppress the output violently
-python3 eval.py $@ > /dev/null 2>&1
+# run eval.py
+python3 eval.py $@
 
 # move all files *.00* and *.01* to snaps_res_uflux/
 mv *.00* snaps_${res}_${uflux}

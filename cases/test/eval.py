@@ -103,7 +103,7 @@ if not no_frames:
     def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_min, u_max, w_min, w_max):
         print(f"\rFrame {i+1:3d}/{len(co2_path_xy):3d}", end="")
         plt.figure(figsize=(15, 12))
-        plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
+        plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*100} s")
         plt.subplot(3, 1, 1)
         plt.imshow(co2_slice, vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 3.2])
         plt.title("CO2 (integrated)")
@@ -131,9 +131,11 @@ if not no_frames:
 
     # %%
     # make video with all frames using ffmpeg with 10 fps
+    print("Making video...", end="")
     # !ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4
-    os.system(f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4")
+    os.system(f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4 > /dev/null")
     # os.system(f"ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_slow.mp4")
+    print("done")
 
 
 # %%
@@ -199,7 +201,7 @@ if not no_frames:
     def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max, u_min, u_max, w_min, w_max):
         print(f"\rFrame {i+1:3d}/{len(co2_xz):3d}", end="")
         plt.figure(figsize=(15, 12))
-        plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
+        plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*100} s")
         plt.subplot(3, 1, 1)
         plt.imshow(co2_slice, vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 3.2], origin="lower")
         plt.title("CO2 (integrated)")
@@ -228,9 +230,11 @@ if not no_frames:
 
     # %%
     # make video with all frames using ffmpeg with 10 fps
+    print("Making video...", end="")
     # !ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4
-    os.system(f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4")
+    os.system(f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4 > /dev/null")
     # os.system(f"ffmpeg -y -r 3 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_slow.mp4")
+    print("done")
 
 # %%
 u_xz_mean = np.mean(u_xz[:], axis=0)
