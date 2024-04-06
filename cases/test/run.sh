@@ -4,8 +4,8 @@ python3 ${1}_input.py
 # find number of processes needed
 # -> stored in .ini file under [master] -> npx, npy
 #    but make sure that commented lines are not included, i.e. lines starting with #
-npx=$(awk -F "=" '/npx/ && !/#/ {print $2}' ${1}.ini)
-npy=$(awk -F "=" '/npy/ && !/#/ {print $2}' ${1}.ini)
+npx=$(awk -F "=" '/npx=/ && !/#/ {print $2}' ${1}.ini)
+npy=$(awk -F "=" '/npy=/ && !/#/ {print $2}' ${1}.ini)
 proc=$(($npx * $npy))
 
 # check which microhh version to use:
@@ -23,19 +23,20 @@ fi
 # find resolution of the simulation
 # -> stored in .ini file under [grid] -> itot, jtot, ktot
 #    but make sure that commented lines are not included, i.e. lines starting with #
-itot=$(awk -F "=" '/itot/ && !/#/ {print $2}' ${1}.ini)
-jtot=$(awk -F "=" '/jtot/ && !/#/ {print $2}' ${1}.ini)
-ktot=$(awk -F "=" '/ktot/ && !/#/ {print $2}' ${1}.ini)
+itot=$(awk -F "=" '/itot=/ && !/#/ {print $2}' ${1}.ini)
+jtot=$(awk -F "=" '/jtot=/ && !/#/ {print $2}' ${1}.ini)
+ktot=$(awk -F "=" '/ktot=/ && !/#/ {print $2}' ${1}.ini)
 res="${itot}_${jtot}_${ktot}"
 
 # find uflux of the simulation
 # -> stored in .ini file under [force] -> uflux
 #    but make sure that commented lines are not included, i.e. lines starting with #
-#    also, this only exists if [force] -> swlpres=uflux,
+#    also, this only exists if [force] -> swlspres=uflux,
 #    otherwise set to "X"
 
-if [ $(awk -F "=" '/swlspres/ && !/#/ {print $2}' ${1}.ini) -eq "uflux" ]; then
-    uflux=$(awk -F "=" '/uflux/ && !/#/ {print $2}' ${1}.ini)
+# check whether string of swlspres is identical to "uflux"
+if [ $(awk -F "=" '/swlspres=/ && !/#/ {print $2}' ${1}.ini) == "uflux" ]; then
+    uflux=$(awk -F "=" '/uflux=/ && !/#/ {print $2}' ${1}.ini)
     # round uflux to nearest integer
     uflux=$(echo $uflux | awk '{print int($1+0.5)}')
 else
