@@ -35,7 +35,7 @@ with open(f"{folder}.ini") as f:
         if line.split("=")[0] == "ktot":
             ktot = line.split("=")[1].strip()
         if line.split("=")[0] == "uflux":
-            uflux = line.split("=")[1].strip()
+            uflux = str(round(float(line.split("=")[1].strip())))
     res = f"{itot}_{jtot}_{ktot}"
 
 print(f"res={res}, uflux={uflux}")
