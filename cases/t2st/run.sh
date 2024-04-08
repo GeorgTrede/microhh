@@ -54,6 +54,9 @@ python3 cross_to_nc.py -n ${proc} > /dev/null 2>&1
 # move the created .nc files to snaps_res_uflux/nc_files
 mv *.nc snaps_${res}_${uflux}/nc_files
 
+# clear frames folder
+rm frames/*
+
 # run eval.py
 python3 eval.py $@
 
