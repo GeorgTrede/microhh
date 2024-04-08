@@ -32,7 +32,7 @@ z_qt = np.array([0, 400, 2000, 2500, 5000])
 v_qt = np.array([6.2, 4.93, 3.61, 1, 0.3]) / 1000
 qt = np.interp(z, z_qt, v_qt)
 
-z_u = np.array([0, 270, 3000, 5000])
+z_u = np.array([0, 1000, 3000, 5000])
 v_u = np.array([2.3, 5.5, 0.6, 5.7])
 u = np.interp(z, z_u, v_u)
 
