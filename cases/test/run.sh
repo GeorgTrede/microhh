@@ -49,7 +49,7 @@ mkdir -p snaps_${res}_${uflux}/nc_files
 mkdir -p snaps_${res}_${uflux}/npy_files
 
 # run cross_to_nc.py and suppress the output violently
-python3 cross_to_nc.py -n ${proc} -r ${res} -u ${uflux} > /dev/null 2>&1
+python3 cross_to_nc.py -n ${proc} > /dev/null 2>&1
 
 # move the created .nc files to snaps_res_uflux/nc_files
 mv *.nc snaps_${res}_${uflux}/nc_files
