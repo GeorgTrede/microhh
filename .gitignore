@@ -3,6 +3,9 @@
 .gitignore
 .vscode
 .*
+rte_rrt*
+external*
+rte-rrtmgp-cpp/
 cases/*/*.nc
 cases/*/*/*.nc
 cases/*/*/*/*.nc

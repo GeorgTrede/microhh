@@ -28,8 +28,8 @@ from scipy.interpolate import RectBivariateSpline
 kmin = 0
 kmax = 900
 
-smin = -8.
-smax = 13.
+smin = -8.0
+smax = 13.0
 
 iterstart = 100
 iterstep = 100
@@ -47,36 +47,44 @@ x = stats.variables["x"][:]
 s = stats.variables["slngrad"][-1, kmin:kmax, :]
 
 # color scheme black/blue/yellow/red
-cdict = {'red': ((0.00, 0, 0),
-                 (0.36, 0, 0),
-                 (0.59, 0, 0),
-                 (0.75, 1, 1),
-                 (0.96, 0.667, 0.667),
-                 (1.00, 0.392, 0.392)),
-         'green': ((0.00, 0, 0),
-                   (0.36, 0.026, 0.026),
-                   (0.59, 0.718, 0.718),
-                   (0.75, 1, 1),
-                   (0.96, 0, 0),
-                   (1.00, 0, 0)),
-         'blue': ((0.00, 0, 0),
-                  (0.36, 0.026, 0.026),
-                  (0.59, 1, 1),
-                  (0.75, 0, 0),
-                  (0.96, 0, 0),
-                  (1.00, 0, 0))}
-my_cmap = matplotlib.colors.LinearSegmentedColormap('my_colormap', cdict, 256)
+cdict = {
+    "red": (
+        (0.00, 0, 0),
+        (0.36, 0, 0),
+        (0.59, 0, 0),
+        (0.75, 1, 1),
+        (0.96, 0.667, 0.667),
+        (1.00, 0.392, 0.392),
+    ),
+    "green": (
+        (0.00, 0, 0),
+        (0.36, 0.026, 0.026),
+        (0.59, 0.718, 0.718),
+        (0.75, 1, 1),
+        (0.96, 0, 0),
+        (1.00, 0, 0),
+    ),
+    "blue": (
+        (0.00, 0, 0),
+        (0.36, 0.026, 0.026),
+        (0.59, 1, 1),
+        (0.75, 0, 0),
+        (0.96, 0, 0),
+        (1.00, 0, 0),
+    ),
+}
+my_cmap = matplotlib.colors.LinearSegmentedColormap("my_colormap", cdict, 256)
 
 # enable LaTeX plotting
-#rc('font', family='serif')
-#rc('font',**{'family':'serif','serif':['Computer Modern']})
-rc('font', **{'family': 'serif', 'serif': ['Palatino']})
+# rc('font', family='serif')
+# rc('font',**{'family':'serif','serif':['Computer Modern']})
+rc("font", **{"family": "serif", "serif": ["Palatino"]})
 # rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-rc('text', usetex=True)
+rc("text", usetex=True)
 
 # create interpolation function
 fint = RectBivariateSpline(z, x, s)
-del(s)
+del s
 # create interpolated value
 zint = linspace(z.min(), z.max(), 1680)
 sint = fint(zint, x)
@@ -89,34 +97,30 @@ for i in range(niter):
     print("Processing iteration: ", iter)
     fint = RectBivariateSpline(z, x, s)
     sint = fint(zint, x)
-    del(s)
+    del s
 
-    close('all')
+    close("all")
     fig1 = figure(
-        figsize=(19.2, 19.2 * (zint.max() - zint.min()) / (x.max() - x.min())))
-    if(noborder):
-        fig1.subplots_adjust(0.000, 0.000, 1.0, 1.0, 0., 0.)
+        figsize=(19.2, 19.2 * (zint.max() - zint.min()) / (x.max() - x.min()))
+    )
+    if noborder:
+        fig1.subplots_adjust(0.000, 0.000, 1.0, 1.0, 0.0, 0.0)
     else:
         fig1.subplots_adjust(0.05, 0.05, 0.97, 0.97, 0, 0)
-    plt = imshow(
-        sint,
-        origin='lower',
-        extent=ext,
-        cmap=my_cmap,
-        vmin=smin,
-        vmax=smax)
+    plt = imshow(sint, origin="lower", extent=ext, cmap=my_cmap, vmin=smin, vmax=smax)
     # colorbar(pad=0.02)
-    xlabel(r'$x$')
-    ylabel(r'$z$')
+    xlabel(r"$x$")
+    ylabel(r"$z$")
     axis(ext)
-    if(noborder):
+    if noborder:
         plt.axes.set_frame_on(False)
         plt.axes.get_xaxis().set_visible(False)
         plt.axes.get_yaxis().set_visible(False)
         plt.axes.get_yaxis().set_visible(False)
     savefig(
-        'figs/slngrad.{:07d}.png'.format(iter),
-        facecolor='black',
-        edgecolor='none',
-        dpi=100)
-    del(fint, sint)
+        "figs/slngrad.{:07d}.png".format(iter),
+        facecolor="black",
+        edgecolor="none",
+        dpi=100,
+    )
+    del (fint, sint)

@@ -50,9 +50,7 @@ co2 = np.zeros(kmax)
 # wqt  = 8.3e-5 * np.sin(np.pi * (time-t0) / td2)
 
 # Write input NetCDF file
-nc_file = nc.Dataset(
-    "t2st_input.nc", mode="w", datamodel="NETCDF4", clobber=True
-)
+nc_file = nc.Dataset("t2st_input.nc", mode="w", datamodel="NETCDF4", clobber=True)
 
 nc_file.createDimension("z", kmax)
 nc_z = nc_file.createVariable("z", float_type, ("z"))
