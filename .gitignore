@@ -4,6 +4,7 @@
 .vscode
 .*
 rte_rrt*
+rte_rrtmgp-cpp/
 cases/*/*.nc
 cases/*/*/*.nc
 cases/*/*/*/*.nc
