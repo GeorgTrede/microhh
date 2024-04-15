@@ -1,7 +1,6 @@
 import matplotlib.pyplot as pl
 import numpy as np
 import netCDF4 as nc
-from scipy.interpolate import interp1d
 
 pl.close("all")
 pl.ion()
@@ -9,7 +8,7 @@ pl.ion()
 float_type = "f8"
 
 # Get number of vertical levels and size from .ini file
-with open("test.ini") as f:
+with open("./test.ini") as f:
     for line in f:
         if line.split("=")[0] == "ktot":
             kmax = int(line.split("=")[1])
@@ -58,9 +57,7 @@ co2 = np.zeros(kmax)
 # wqt  = 8.3e-5 * np.sin(np.pi * (time-t0) / td2)
 
 # Write input NetCDF file
-nc_file = nc.Dataset(
-    "test_input.nc", mode="w", datamodel="NETCDF4", clobber=True
-)
+nc_file = nc.Dataset("test_input.nc", mode="w", datamodel="NETCDF4", clobber=True)
 
 nc_file.createDimension("z", kmax)
 nc_z = nc_file.createVariable("z", float_type, ("z"))
