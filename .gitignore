@@ -4,7 +4,10 @@
 .vscode
 .*
 rte_rrt*
+<<<<<<< HEAD
 external*
+=======
+>>>>>>> refs/remotes/origin/main
 rte-rrtmgp-cpp/
 cases/*/*.nc
 cases/*/*/*.nc
