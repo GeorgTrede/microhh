@@ -3,7 +3,7 @@
 .gitignore
 .vscode
 .*
-rte_rrtmgp_input.nc
+rte_rrt*
 cases/*/*.nc
 cases/*/*/*.nc
 cases/*/*/*/*.nc
