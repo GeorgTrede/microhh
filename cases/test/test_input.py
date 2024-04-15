@@ -9,7 +9,7 @@ pl.ion()
 float_type = "f8"
 
 # Get number of vertical levels and size from .ini file
-with open("test.ini") as f:
+with open("./test.ini") as f:
     for line in f:
         if line.split("=")[0] == "ktot":
             kmax = int(line.split("=")[1])
@@ -22,7 +22,7 @@ with open("test.ini") as f:
 sw_plume_rise = True
 
 # Vertical grid LES
-dz = zsize / kmax
+dz = zsize / kmax  # type: ignore
 z = np.arange(0.5 * dz, zsize, dz)
 
 v_thl = np.array([285.7, 291.9, 293, 297.4, 307])
@@ -34,15 +34,15 @@ v_qt = np.array([6.2, 4.93, 3.61, 1, 0.3]) / 1000
 qt = np.interp(z, z_qt, v_qt)
 
 # cubic interpolation of u
-# z_u = np.array([0, 500, 1500, 2000, 3000, 4000, 5000])
-# v_u = np.array([2.3, 6.5, 4.4, 4.0, 4.0, 4.4, 5.7])
-# f = interp1d(z_u, v_u, kind='cubic')
-# u = f(z)
+z_u = np.array([0, 500, 1500, 2000, 3000, 4000, 5000])
+v_u = np.array([2.3, 6.5, 4.4, 4.0, 4.0, 4.4, 5.7])
+f = interp1d(z_u, v_u, kind="cubic")
+u = f(z)
 
 # linear interpolation of u
-z_u = np.array([0, 1000, 2500, 5000])
-v_u = np.array([2.3, 6.5, 4.0, 5.7])
-u = np.interp(z, z_u, v_u)
+# z_u = np.array([0, 1000, 2500, 5000])
+# v_u = np.array([2.3, 6.5, 4.0, 5.7])
+# u = np.interp(z, z_u, v_u)
 
 v = np.zeros(kmax)
 co2 = np.zeros(kmax)
@@ -58,9 +58,7 @@ co2 = np.zeros(kmax)
 # wqt  = 8.3e-5 * np.sin(np.pi * (time-t0) / td2)
 
 # Write input NetCDF file
-nc_file = nc.Dataset(
-    "test_input.nc", mode="w", datamodel="NETCDF4", clobber=True
-)
+nc_file = nc.Dataset("test_input.nc", mode="w", datamodel="NETCDF4", clobber=True)  # type: ignore
 
 nc_file.createDimension("z", kmax)
 nc_z = nc_file.createVariable("z", float_type, ("z"))

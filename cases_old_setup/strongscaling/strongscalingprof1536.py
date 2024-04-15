@@ -1,57 +1,62 @@
 import numpy
-#from pylab import *
+
+# from pylab import *
 
 # set the height
 kmax = 1536
-dn   = 1./kmax
+dn = 1.0 / kmax
 
-n = numpy.linspace(dn, 1.-dn, kmax)
+n = numpy.linspace(dn, 1.0 - dn, kmax)
 
-nloc1 = 256.*dn
-nbuf1 = 64.*dn
+nloc1 = 256.0 * dn
+nbuf1 = 64.0 * dn
 
-nloc2 = 1536.*dn
-nbuf2 = 192.*dn
+nloc2 = 1536.0 * dn
+nbuf2 = 192.0 * dn
 
 dz1 = 0.0004
 dz2 = 0.0008
 dz3 = 0.004
 
-dzdn1 = dz1/dn
-dzdn2 = dz2/dn
-dzdn3 = dz3/dn
+dzdn1 = dz1 / dn
+dzdn2 = dz2 / dn
+dzdn3 = dz3 / dn
 
-dzdn = dzdn1 + 0.5*(dzdn2-dzdn1)*(1. + numpy.tanh((n-nloc1)/nbuf1)) + 0.5*(dzdn3-dzdn2)*(1. + numpy.tanh((n-nloc2)/nbuf2))
+dzdn = (
+    dzdn1
+    + 0.5 * (dzdn2 - dzdn1) * (1.0 + numpy.tanh((n - nloc1) / nbuf1))
+    + 0.5 * (dzdn3 - dzdn2) * (1.0 + numpy.tanh((n - nloc2) / nbuf2))
+)
 
-dz = dzdn*dn
+dz = dzdn * dn
 
-z       = numpy.zeros(numpy.size(dz))
+z = numpy.zeros(numpy.size(dz))
 stretch = numpy.zeros(numpy.size(dz))
 
-z      [0] = 0.5*dz[0]
-stretch[0] = 1.
+z[0] = 0.5 * dz[0]
+stretch[0] = 1.0
 
-for k in range(1,kmax):
-  z      [k] = z[k-1] + 0.5*(dz[k-1]+dz[k])
-  stretch[k] = dz[k]/dz[k-1]
+for k in range(1, kmax):
+    z[k] = z[k - 1] + 0.5 * (dz[k - 1] + dz[k])
+    stretch[k] = dz[k] / dz[k - 1]
 
-zsize = z[kmax-1] + 0.5*dz[kmax-1]
-print('zsize = ', zsize)
+zsize = z[kmax - 1] + 0.5 * dz[kmax - 1]
+print("zsize = ", zsize)
 
-b0    = 1.
+b0 = 1.0
 delta = 4.407731e-3
-N2    = 3.
+N2 = 3.0
 
 b = numpy.zeros(numpy.size(z))
 
 for k in range(kmax):
-  b[k] = N2*z[k]
+    b[k] = N2 * z[k]
 
 # write the data to a file
-proffile = open('strongscaling1536.prof','w')
-proffile.write('{0:^20s} {1:^20s}\n'.format('z','b'))
+proffile = open("strongscaling1536.prof", "w")
+proffile.write("{0:^20s} {1:^20s}\n".format("z", "b"))
 for k in range(kmax):
-  proffile.write('{0:1.14E} {1:1.14E}\n'.format(z[k], b[k]))
+    proffile.write("{0:1.14E} {1:1.14E}\n".format(z[k], b[k]))
 proffile.close()
 
 """

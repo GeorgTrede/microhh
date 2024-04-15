@@ -1,26 +1,27 @@
 import numpy
 from pylab import *
 import netCDF4 as nc
-float_type = 'f8'
+
+float_type = "f8"
 
 # set the height (ktot = 512)
 ktot = 768
 itot = 1024
-xsize = 1.
+xsize = 1.0
 
-dn = xsize/itot
+dn = xsize / itot
 
-n = numpy.linspace(dn, 1.-dn, ktot)
+n = numpy.linspace(dn, 1.0 - dn, ktot)
 
-nloc1 = 160.*dn
-nbuf1 = 48.*dn
+nloc1 = 160.0 * dn
+nbuf1 = 48.0 * dn
 
-nloc2 = 1024.*dn
-nbuf2 = 144.*dn
+nloc2 = 1024.0 * dn
+nbuf2 = 144.0 * dn
 
-dz1 = 0.5*dn
+dz1 = 0.5 * dn
 dz2 = dn
-dz3 = 5.*dn
+dz3 = 5.0 * dn
 
 # set the height (ktot = 1024)
 """
@@ -40,44 +41,47 @@ dz2 = 0.0009765625
 dz3 = 0.008
 """
 
-dzdn1 = dz1/dn
-dzdn2 = dz2/dn
-dzdn3 = dz3/dn
+dzdn1 = dz1 / dn
+dzdn2 = dz2 / dn
+dzdn3 = dz3 / dn
 
-dzdn = dzdn1 + 0.5*(dzdn2-dzdn1)*(1. + numpy.tanh((n-nloc1)/nbuf1)) + \
-    0.5*(dzdn3-dzdn2)*(1. + numpy.tanh((n-nloc2)/nbuf2))
+dzdn = (
+    dzdn1
+    + 0.5 * (dzdn2 - dzdn1) * (1.0 + numpy.tanh((n - nloc1) / nbuf1))
+    + 0.5 * (dzdn3 - dzdn2) * (1.0 + numpy.tanh((n - nloc2) / nbuf2))
+)
 
-dz = dzdn*dn
+dz = dzdn * dn
 
 z = numpy.zeros(numpy.size(dz))
 stretch = numpy.zeros(numpy.size(dz))
 
-z[0] = 0.5*dz[0]
-stretch[0] = 1.
+z[0] = 0.5 * dz[0]
+stretch[0] = 1.0
 
 for k in range(1, ktot):
-    z[k] = z[k-1] + 0.5*(dz[k-1]+dz[k])
-    stretch[k] = dz[k]/dz[k-1]
+    z[k] = z[k - 1] + 0.5 * (dz[k - 1] + dz[k])
+    stretch[k] = dz[k] / dz[k - 1]
 
-zsize = z[ktot-1] + 0.5*dz[ktot-1]
-print('zsize = ', zsize)
+zsize = z[ktot - 1] + 0.5 * dz[ktot - 1]
+print("zsize = ", zsize)
 
-b0 = 1.
+b0 = 1.0
 delta = 4.407731e-3
-N2 = 3.
+N2 = 3.0
 
 b = numpy.zeros(numpy.size(z))
 
 for k in range(ktot):
-    b[k] = N2*z[k]
+    b[k] = N2 * z[k]
 
 # write the data to a file
 nc_file = nc.Dataset("drycbl_input.nc", mode="w", datamodel="NETCDF4", clobber=True)
 
 nc_file.createDimension("z", ktot)
-nc_z = nc_file.createVariable("z" , float_type, ("z"))
+nc_z = nc_file.createVariable("z", float_type, ("z"))
 
-nc_group_init = nc_file.createGroup("init");
+nc_group_init = nc_file.createGroup("init")
 nc_b = nc_group_init.createVariable("b", float_type, ("z"))
 
 nc_z[:] = z[:]

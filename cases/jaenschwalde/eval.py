@@ -7,7 +7,7 @@ import sys
 import multiprocessing
 
 # set plt font size
-plt.rcParams.update({'font.size': 16})
+plt.rcParams.update({"font.size": 16})
 
 show = plt.close
 # show = plt.show
@@ -46,14 +46,18 @@ if "--no-frames" in sys.argv:
 else:
     no_frames = False
 
-os.chdir("/home/georg.trede/MasterThesis/env/microhh/cases/{}/snaps_{}_uflux{}".format(folder, res, uflux))
+os.chdir(
+    "/home/georg.trede/MasterThesis/env/microhh/cases/{}/snaps_{}_uflux{}".format(
+        folder, res, uflux
+    )
+)
 
 # %%
-ds_co2_path_xy = nc.Dataset("nc_files/co2_path.xy.nc") # type: ignore
-ds_co2_xy = nc.Dataset("nc_files/co2.xy.nc") # type: ignore
-ds_u_xy = nc.Dataset("nc_files/u.xy.nc") # type: ignore
-ds_v_xy = nc.Dataset("nc_files/v.xy.nc") # type: ignore
-ds_w_xy = nc.Dataset("nc_files/w.xy.nc") # type: ignore
+ds_co2_path_xy = nc.Dataset("nc_files/co2_path.xy.nc")  # type: ignore
+ds_co2_xy = nc.Dataset("nc_files/co2.xy.nc")  # type: ignore
+ds_u_xy = nc.Dataset("nc_files/u.xy.nc")  # type: ignore
+ds_v_xy = nc.Dataset("nc_files/v.xy.nc")  # type: ignore
+ds_w_xy = nc.Dataset("nc_files/w.xy.nc")  # type: ignore
 
 # %%
 co2_path_xy = np.array(ds_co2_path_xy.variables["co2_path"][:])
@@ -68,10 +72,10 @@ z_xy = np.array(ds_co2_xy.variables["z"][:])
 # save co2_path, co2, u, v, w
 np.save("npy_files/co2_path.npy", co2_path_xy)
 for i in range(co2_xy.shape[1]):  # co2.shape[1] should give the number of heights
-    np.save(f'npy_files/co2_h{i+1}_xy.npy', co2_xy[:, i, :, :])
-    np.save(f'npy_files/u_h{i+1}_xy.npy', u_xy[:, i, :, :])
-    np.save(f'npy_files/v_h{i+1}_xy.npy', v_xy[:, i, :, :])
-    np.save(f'npy_files/w_h{i+1}_xy.npy', w_xy[:, i, :, :])
+    np.save(f"npy_files/co2_h{i+1}_xy.npy", co2_xy[:, i, :, :])
+    np.save(f"npy_files/u_h{i+1}_xy.npy", u_xy[:, i, :, :])
+    np.save(f"npy_files/v_h{i+1}_xy.npy", v_xy[:, i, :, :])
+    np.save(f"npy_files/w_h{i+1}_xy.npy", w_xy[:, i, :, :])
 
 # %%
 # load co2_path, co2, u, v, w from npy files
@@ -100,12 +104,25 @@ if not no_frames:
     w_min, w_max = w_min + 0.1 * w_range, w_max - 0.1 * w_range
 
     # %%
-    def process_frame(i, co2_slice, u_slice, w_slice, z_level, z, uflux, co2_max, u_min, u_max, w_min, w_max):
+    def process_frame(
+        i,
+        co2_slice,
+        u_slice,
+        w_slice,
+        z_level,
+        z,
+        uflux,
+        co2_max,
+        u_min,
+        u_max,
+        w_min,
+        w_max,
+    ):
         print(f"\rFrame {i+1:3d}/{len(co2_path_xy):3d}", end="")
         plt.figure(figsize=(15, 12))
         plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
         plt.subplot(3, 1, 1)
-        plt.imshow(co2_slice, vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 3.2])
+        plt.imshow(co2_slice, vmin=0, vmax=co2_max * 0.8, extent=[0, 12.8, 0, 3.2])
         plt.title("CO2 (integrated)")
         plt.xlabel("x [km]")
         plt.ylabel("y [km]")
@@ -127,12 +144,33 @@ if not no_frames:
         plt.close()
 
     with multiprocessing.Pool() as pool:
-        pool.starmap(process_frame, [(i, co2_path_xy[i], u_xy[i, z_level], w_xy[i, z_level], z_level, z_xy, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_path_xy))])
+        pool.starmap(
+            process_frame,
+            [
+                (
+                    i,
+                    co2_path_xy[i],
+                    u_xy[i, z_level],
+                    w_xy[i, z_level],
+                    z_level,
+                    z_xy,
+                    uflux,
+                    co2_max,
+                    u_min,
+                    u_max,
+                    w_min,
+                    w_max,
+                )
+                for i in range(len(co2_path_xy))
+            ],
+        )
 
     # %%
     # make video with all frames using ffmpeg with 10 fps
     # !ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4
-    os.system(f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4")
+    os.system(
+        f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4"
+    )
     # os.system(f"ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_slow.mp4")
 
 
@@ -153,16 +191,16 @@ plt.figure(figsize=(15, 6))
 plt.title("Time series of TKE")
 plt.plot(tke_time_series)
 plt.xlabel("Time [s]")
-plt.xticks(np.arange(0, 340, 50), np.arange(0, 340*300, 50*300))
+plt.xticks(np.arange(0, 340, 50), np.arange(0, 340 * 300, 50 * 300))
 plt.ylabel("avg'd TKE [m²/s²]")
 plt.legend([f"h{i+1}={int(z_xy[i])}m" for i in range(len(z_xy))])
 plt.savefig(f"../tke_{res}_uflux{uflux}.png")
 
 # %%
-ds_co2_xz = nc.Dataset("nc_files/co2.xz.nc") # type: ignore
-ds_u_xz = nc.Dataset("nc_files/u.xz.nc") # type: ignore
-ds_v_xz = nc.Dataset("nc_files/v.xz.nc") # type: ignore
-ds_w_xz = nc.Dataset("nc_files/w.xz.nc") # type: ignore
+ds_co2_xz = nc.Dataset("nc_files/co2.xz.nc")  # type: ignore
+ds_u_xz = nc.Dataset("nc_files/u.xz.nc")  # type: ignore
+ds_v_xz = nc.Dataset("nc_files/v.xz.nc")  # type: ignore
+ds_w_xz = nc.Dataset("nc_files/w.xz.nc")  # type: ignore
 
 # %%
 co2_xz = np.array(ds_co2_xz.variables["co2"][:])
@@ -191,29 +229,52 @@ if not no_frames:
     co2_min, co2_max = np.min(co2_xz), np.max(co2_xz)
     u_min, u_max = np.min(u_xz), np.max(u_xz)
     u_range = u_max - u_min
-    u_min, u_max = u_min + 0.1*u_range, u_max - 0.1*u_range
+    u_min, u_max = u_min + 0.1 * u_range, u_max - 0.1 * u_range
     w_min, w_max = np.min(w_xz), np.max(w_xz)
     w_range = w_max - w_min
-    w_min, w_max = w_min + 0.1*w_range, w_max - 0.1*w_range
+    w_min, w_max = w_min + 0.1 * w_range, w_max - 0.1 * w_range
 
-    def process_frame_xz(i, co2_slice, u_slice, w_slice, y_level, y, uflux, co2_max, u_min, u_max, w_min, w_max):
+    def process_frame_xz(
+        i,
+        co2_slice,
+        u_slice,
+        w_slice,
+        y_level,
+        y,
+        uflux,
+        co2_max,
+        u_min,
+        u_max,
+        w_min,
+        w_max,
+    ):
         print(f"\rFrame {i+1:3d}/{len(co2_xz):3d}", end="")
         plt.figure(figsize=(15, 12))
         plt.suptitle(f"Simulation with uflux={uflux} m/s\nt={i*300} s")
         plt.subplot(3, 1, 1)
-        plt.imshow(co2_slice, vmin=0, vmax=co2_max*0.8, extent=[0, 12.8, 0, 5.0], origin="lower")
+        plt.imshow(
+            co2_slice,
+            vmin=0,
+            vmax=co2_max * 0.8,
+            extent=[0, 12.8, 0, 5.0],
+            origin="lower",
+        )
         plt.title("CO2 (integrated)")
         plt.xlabel("x [km]")
         plt.ylabel("z [m]")
         plt.colorbar(shrink=0.7)
         plt.subplot(3, 1, 2)
-        plt.imshow(u_slice, vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 5.0], origin="lower")
+        plt.imshow(
+            u_slice, vmin=u_min, vmax=u_max, extent=[0, 12.8, 0, 5.0], origin="lower"
+        )
         plt.title(f"u (at y={int(y[y_level])}km, in m/s)")
         plt.xlabel("x [km]")
         plt.ylabel("z [m]")
         plt.colorbar(shrink=0.7)
         plt.subplot(3, 1, 3)
-        plt.imshow(w_slice, vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 5.0], origin="lower")
+        plt.imshow(
+            w_slice, vmin=w_min, vmax=w_max, extent=[0, 12.8, 0, 5.0], origin="lower"
+        )
         plt.title(f"w (at y={int(y[y_level])}km, in m/s)")
         plt.xlabel("x [km]")
         plt.ylabel("z [m]")
@@ -224,12 +285,33 @@ if not no_frames:
 
     y_level = 0
     with multiprocessing.Pool() as pool:
-        pool.starmap(process_frame_xz, [(i, co2_xz[i, :, y_level], u_xz[i, :, y_level], w_xz[i, :, y_level], y_level, y_xz, uflux, co2_max, u_min, u_max, w_min, w_max) for i in range(len(co2_xz))])
+        pool.starmap(
+            process_frame_xz,
+            [
+                (
+                    i,
+                    co2_xz[i, :, y_level],
+                    u_xz[i, :, y_level],
+                    w_xz[i, :, y_level],
+                    y_level,
+                    y_xz,
+                    uflux,
+                    co2_max,
+                    u_min,
+                    u_max,
+                    w_min,
+                    w_max,
+                )
+                for i in range(len(co2_xz))
+            ],
+        )
 
     # %%
     # make video with all frames using ffmpeg with 10 fps
     # !ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4
-    os.system(f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4")
+    os.system(
+        f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4"
+    )
     # os.system(f"ffmpeg -y -r 3 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_slow.mp4")
 
 # %%
@@ -249,7 +331,7 @@ plt.figure(figsize=(15, 6))
 plt.title("Time series of TKE")
 plt.plot(tke_time_series)
 plt.xlabel("Time [s]")
-plt.xticks(np.arange(0, 340, 50), np.arange(0, 340*300, 50*300))
+plt.xticks(np.arange(0, 340, 50), np.arange(0, 340 * 300, 50 * 300))
 plt.ylabel("avg'd TKE [m²/s²]")
 plt.ylim(bottom=0)
 plt.savefig(f"../tke_{res}_uflux{uflux}_xz.png")

@@ -17,6 +17,7 @@ def host_name():
 
 def device_name(device=0):
     import pycuda.driver as drv
+
     drv.init()
     return drv.Device(device).name()
 
@@ -24,14 +25,14 @@ def device_name(device=0):
 def tune_kernel(filename, args):
     print(f"parsing file: {filename}")
 
-    cache_filename = filename.replace('.json', '.cache')
+    cache_filename = filename.replace(".json", ".cache")
 
     problem = kl.load_tuning_problem(filename, data_dir=args.data_dir)
     options = dict(
-            iterations=args.iterations,
-            verify=args.verify,
-            atol=args.atol,
-            cache=cache_filename,
+        iterations=args.iterations,
+        verify=args.verify,
+        atol=args.atol,
+        cache=cache_filename,
     )
     strategy_options = dict(
         time_limit=args.time_limit,
@@ -65,7 +66,8 @@ def tune_kernel(filename, args):
             block_params,
             strategy="brute_force",
             strategy_options=dict(max_fevals=1e99),
-            **options)
+            **options,
+        )
 
         after = datetime.datetime.now()
         time_remaining = args.time_limit - (after - before).total_seconds()
@@ -83,21 +85,20 @@ def tune_kernel(filename, args):
                 more_params,
                 strategy="bayes_opt",
                 strategy_options=strategy_options,
-                **options)
+                **options,
+            )
 
             results += more_results
 
     elif args.strategy == "random":
         results, env = problem.tune(
-            strategy="random",
-            strategy_options=strategy_options,
-            **options)
+            strategy="random", strategy_options=strategy_options, **options
+        )
 
     elif args.strategy == "bayes":
         results, env = problem.tune(
-            strategy="bayes_opt",
-            strategy_options=strategy_options,
-            **options)
+            strategy="bayes_opt", strategy_options=strategy_options, **options
+        )
 
     else:
         raise ValueError(f"unknown strategy: {args.strategy}")
@@ -108,8 +109,14 @@ def tune_kernel(filename, args):
     print(f"best configuration: {best_result!r}")
 
     print("writing wisdom file")
-    kl.write_wisdom_for_problem(args.output, problem, results, env,
-                                max_results=1, merge_existing_results=args.append)
+    kl.write_wisdom_for_problem(
+        args.output,
+        problem,
+        results,
+        env,
+        max_results=1,
+        merge_existing_results=args.append,
+    )
 
 
 def parse_time(input):
@@ -130,26 +137,66 @@ def parse_time(input):
 
 def main():
     parser = argparse.ArgumentParser(
-            description="Tune given kernel files and store the results in wisdom files")
-    parser.add_argument("--iterations", "-i", type=int, default=5,
-                        help="Number of benchmark iterations for each kernel")
-    parser.add_argument("--time", "-t", type=parse_time, default="15:00", dest="time_limit",
-                        help="Maximum time in seconds spend on tuning each kernel.")
-    parser.add_argument("--output", "-o", default=os.path.join(MICROHH_HOME, "wisdom"),
-                        help="Directory where to store resulting wisdom files.")
-    parser.add_argument("--data-dir", "-d", default=None,
-                        help="Directory where data files (.bin) are located.")
-    parser.add_argument("--no-verify", action="store_false", default=True, dest="verify",
-                        help="Verify if the output of each kernel launch is correct.")
-    parser.add_argument("--tolerance", "--atol", dest="atol", type=float,
-                        help="Absolute tolerance used for verification as interpreted by numpy.isclose.")
-    parser.add_argument("--append", "-a", default=False, action="store_true",
-                        help="Append new results to existing wisdom instead of overwriting them.")
-    parser.add_argument("--strategy", "-s", default="bayes", choices=["block", "bayes", "random"],
-                        help="The strategy to use for tuning:\n"
-                             " - random: try random configurations until time runs out.\n"
-                             " - bayes: use Bayesian optimization to try configurations until time runs out.\n"
-                             " - block: brute-force search block sizes and then optimize the remaining parameters.\n")
+        description="Tune given kernel files and store the results in wisdom files"
+    )
+    parser.add_argument(
+        "--iterations",
+        "-i",
+        type=int,
+        default=5,
+        help="Number of benchmark iterations for each kernel",
+    )
+    parser.add_argument(
+        "--time",
+        "-t",
+        type=parse_time,
+        default="15:00",
+        dest="time_limit",
+        help="Maximum time in seconds spend on tuning each kernel.",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        default=os.path.join(MICROHH_HOME, "wisdom"),
+        help="Directory where to store resulting wisdom files.",
+    )
+    parser.add_argument(
+        "--data-dir",
+        "-d",
+        default=None,
+        help="Directory where data files (.bin) are located.",
+    )
+    parser.add_argument(
+        "--no-verify",
+        action="store_false",
+        default=True,
+        dest="verify",
+        help="Verify if the output of each kernel launch is correct.",
+    )
+    parser.add_argument(
+        "--tolerance",
+        "--atol",
+        dest="atol",
+        type=float,
+        help="Absolute tolerance used for verification as interpreted by numpy.isclose.",
+    )
+    parser.add_argument(
+        "--append",
+        "-a",
+        default=False,
+        action="store_true",
+        help="Append new results to existing wisdom instead of overwriting them.",
+    )
+    parser.add_argument(
+        "--strategy",
+        "-s",
+        default="bayes",
+        choices=["block", "bayes", "random"],
+        help="The strategy to use for tuning:\n"
+        " - random: try random configurations until time runs out.\n"
+        " - bayes: use Bayesian optimization to try configurations until time runs out.\n"
+        " - block: brute-force search block sizes and then optimize the remaining parameters.\n",
+    )
     parser.add_argument("files", nargs="*")
 
     args = parser.parse_args()
@@ -159,7 +206,7 @@ def main():
         return
 
     if not args.files:
-        print(f"error: no files given")
+        print("error: no files given")
 
     for file in args.files:
         try:
@@ -168,7 +215,6 @@ def main():
             print(f"error: exception occurred while tuning {file}:")
             traceback.print_exception(type(e), e, e.__traceback__)
             print()
-
 
 
 if __name__ == "__main__":
