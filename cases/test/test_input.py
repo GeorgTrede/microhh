@@ -21,7 +21,7 @@ with open("./test.ini") as f:
 sw_plume_rise = True
 
 # Vertical grid LES
-dz = zsize / kmax
+dz = zsize / kmax  # type: ignore
 z = np.arange(0.5 * dz, zsize, dz)
 
 v_thl = np.array([285.7, 291.9, 293, 297.4, 307])
