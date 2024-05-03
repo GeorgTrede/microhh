@@ -1,7 +1,6 @@
 import matplotlib.pyplot as pl
 import numpy as np
 import netCDF4 as nc
-from scipy.interpolate import interp1d
 
 pl.close("all")
 pl.ion()
@@ -34,15 +33,20 @@ v_qt = np.array([6.2, 4.93, 3.61, 1, 0.3]) / 1000
 qt = np.interp(z, z_qt, v_qt)
 
 # cubic interpolation of u
-z_u = np.array([0, 500, 1500, 2000, 3000, 4000, 5000])
-v_u = np.array([2.3, 6.5, 4.4, 4.0, 4.0, 4.4, 5.7])
-f = interp1d(z_u, v_u, kind="cubic")
-u = f(z)
+# z_u = np.array([0, 500, 1500, 2000, 3000, 4000, 5000])
+# v_u = np.array([2.3, 6.5, 4.4, 4.0, 4.0, 4.4, 5.7])
+# f = interp1d(z_u, v_u, kind="cubic")
+# u = f(z)
 
 # linear interpolation of u
 # z_u = np.array([0, 1000, 2500, 5000])
 # v_u = np.array([2.3, 6.5, 4.0, 5.7])
 # u = np.interp(z, z_u, v_u)
+
+# logarithmic profile of u
+u_star = 0.3
+z0 = 0.1
+u = u_star / 0.4 * np.log((z + 1) / z0)
 
 v = np.zeros(kmax)
 co2 = np.zeros(kmax)
