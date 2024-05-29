@@ -1,6 +1,7 @@
 import matplotlib.pyplot as pl
 import numpy as np
 import netCDF4 as nc
+from scipy.integrate import odeint
 
 pl.close("all")
 pl.ion()
@@ -44,9 +45,20 @@ qt = np.interp(z, z_qt, v_qt)
 # u = np.interp(z, z_u, v_u)
 
 # logarithmic profile of u
+# u_star = 0.3
+# z0 = 0.1
+# u = u_star / 0.4 * np.log((z + 1) / z0)
+
+
+# Monin-Obukhov profile of u
+def dUdz(U, z, u_star):
+    # \frac{dU}{dz} = \frac{0.3}{0.4 z} (1 - 15 \frac{z}{-100})^{-1/4}
+    return u_star / 0.4 / z * (1 - 15 * z / -100) ** (-1 / 4)
+
+
 u_star = 0.3
 z0 = 0.1
-u = u_star / 0.4 * np.log((z + 1) / z0)
+u = odeint(dUdz, 0, z, args=(u_star,)).flatten()
 
 v = np.zeros(kmax)
 co2 = np.zeros(kmax)
