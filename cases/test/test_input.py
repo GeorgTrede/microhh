@@ -52,11 +52,12 @@ qt = np.interp(z, z_qt, v_qt)
 
 # Monin-Obukhov profile of u
 def dUdz(U, z, u_star):
-    # \frac{dU}{dz} = \frac{0.3}{0.4 z} (1 - 15 \frac{z}{-750})^{-1/4}
-    return u_star / 0.4 / z * (1 - 15 * z / -750) ** (-1 / 4)
+    L = -15  # Obukhov length
+    # \frac{dU}{dz} = \frac{ustar}{0.4 z} (1 - 15 \frac{z}{L})^{-1/4}
+    return u_star / 0.4 / z * (1 - 15 * z / L) ** (-1 / 4)
 
 
-u_star = 0.3
+u_star = 0.5
 z0 = 0.1
 u = odeint(dUdz, 0, z, args=(u_star,)).flatten()
 
