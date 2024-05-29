@@ -52,8 +52,8 @@ qt = np.interp(z, z_qt, v_qt)
 
 # Monin-Obukhov profile of u
 def dUdz(U, z, u_star):
-    # \frac{dU}{dz} = \frac{0.3}{0.4 z} (1 - 15 \frac{z}{-100})^{-1/4}
-    return u_star / 0.4 / z * (1 - 15 * z / -100) ** (-1 / 4)
+    # \frac{dU}{dz} = \frac{0.3}{0.4 z} (1 - 15 \frac{z}{-750})^{-1/4}
+    return u_star / 0.4 / z * (1 - 15 * z / -750) ** (-1 / 4)
 
 
 u_star = 0.3

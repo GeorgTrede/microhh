@@ -58,7 +58,7 @@ mv *.nc snaps_${res}_${uflux}/nc_files
 rm frames/*
 
 # run eval.py
-python3 eval.py $@
+# python3 eval.py $@
 
 # move all files *.00* and *.01* to snaps_res_uflux/
 mv *.00* snaps_${res}_${uflux}
