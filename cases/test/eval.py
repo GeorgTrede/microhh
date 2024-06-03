@@ -36,9 +36,11 @@ with open(f"{folder}.ini") as f:
             ktot = line.split("=")[1].strip()
         if line.split("=")[0] == "uflux":
             uflux = str(round(float(line.split("=")[1].strip())))
+        if line.split("=")[0] == "sbot[thl]":
+            sbot_thl = line.split("=")[1].strip()
     res = f"{itot}_{jtot}_{ktot}"
 
-print(f"res={res}, uflux={uflux}")
+print(f"res={res}, uflux={uflux}, sbot_thl={sbot_thl}")
 
 
 if "--with-frames" in sys.argv:
@@ -47,8 +49,8 @@ else:
     no_frames = True
 
 os.chdir(
-    "/home/georg.trede/MasterThesis/env/microhh/cases/{}/snaps_{}_uflux{}".format(
-        folder, res, uflux
+    "/home/georg.trede/MasterThesis/env/microhh/cases/{}/snaps_{}_uflux{}_thl{}".format(
+        folder, res, uflux, sbot_thl
     )
 )
 
@@ -170,7 +172,7 @@ if not no_frames:
     print("\nMaking video...", end="")
     # !ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4
     os.system(
-        f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}.mp4 > /dev/null 2>&1"
+        f"ffmpeg -y -r 7 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_thl{sbot_thl}.mp4 > /dev/null 2>&1"
     )
     # os.system(f"ffmpeg -y -r 3 -i ../frames/xy_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xy_{res}_uflux{uflux}_slow.mp4")
     print("done")
@@ -196,7 +198,7 @@ plt.xlabel("Time [s]")
 plt.xticks(np.arange(0, 340, 50), np.arange(0, 340 * 300, 50 * 300))
 plt.ylabel("avg'd TKE [m²/s²]")
 plt.legend([f"h{i+1}={int(z_xy[i])}m" for i in range(len(z_xy))])
-plt.savefig(f"../tke_{res}_uflux{uflux}.png")
+plt.savefig(f"../tke_{res}_uflux{uflux}_thl{sbot_thl}.png")
 
 # %%
 ds_co2_xz = nc.Dataset("nc_files/co2.xz.nc")  # type: ignore
@@ -313,7 +315,7 @@ if not no_frames:
     print("\nMaking video...", end="")
     # !ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4
     os.system(
-        f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}.mp4 > /dev/null 2>&1"
+        f"ffmpeg -y -r 7 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_thl{sbot_thl}.mp4 > /dev/null 2>&1"
     )
     # os.system(f"ffmpeg -y -r 3 -i ../frames/xz_%04d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p ../xz_{res}_uflux{uflux}_slow.mp4")
     print("done")
@@ -338,4 +340,4 @@ plt.xlabel("Time [s]")
 plt.xticks(np.arange(0, 340, 50), np.arange(0, 340 * 300, 50 * 300))
 plt.ylabel("avg'd TKE [m²/s²]")
 plt.ylim(bottom=0)
-plt.savefig(f"../tke_{res}_uflux{uflux}_xz.png")
+plt.savefig(f"../tke_{res}_uflux{uflux}_thl{sbot_thl}_xz.png")

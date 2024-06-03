@@ -44,9 +44,21 @@ else
 fi
 uflux="uflux${uflux}"
 
-# create folders snaps_res_uflux/nc_files and snaps_res_uflux/npy_files
-mkdir -p snaps_${res}_${uflux}/nc_files
-mkdir -p snaps_${res}_${uflux}/npy_files
+# find sbot[thl] of the simulation
+# -> stored in .ini file under [boundary] -> sbot[thl]
+#    but make sure that commented lines are not included, i.e. lines starting with #
+#    also, this only exists optionally
+#    if it does not exist, set to "X"
+if [ $(awk -F "=" '/sbot\[thl\]=/ && !/#/ {print $2}' ${1}.ini) ]; then
+    sbot=$(awk -F "=" '/sbot\[thl\]=/ && !/#/ {print $2}' ${1}.ini)
+else
+    sbot="X"
+fi
+sbot="thl${sbot}"
+
+# create folders snaps_res_uflux_sbot/nc_files and snaps_res_uflux_sbot/npy_files
+mkdir -p snaps_${res}_${uflux}_${sbot}/nc_files
+mkdir -p snaps_${res}_${uflux}_${sbot}/npy_files
 
 # run cross_to_nc.py and suppress the output violently
 python3 cross_to_nc.py -n ${proc} > /dev/null 2>&1
@@ -61,9 +73,9 @@ rm frames/*
 # python3 eval.py $@
 
 # move all files *.00* and *.01* to snaps_res_uflux/
-mv *.00* snaps_${res}_${uflux}
-mv *.01* snaps_${res}_${uflux}
-mv *.02* snaps_${res}_${uflux}
+mv *.00* snaps_${res}_${uflux}_${sbot}
+mv *.01* snaps_${res}_${uflux}_${sbot}
+mv *.02* snaps_${res}_${uflux}_${sbot}
 
 # remove .out files
 rm *.out
