@@ -1,170 +1,211 @@
 # %%
 import netCDF4 as nc
+import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.colors import Normalize
 
 # Open the relevant data files
-u_file = nc.Dataset("u.xy.nc", "r")
-v_file = nc.Dataset("v.xy.nc", "r")
-w_file = nc.Dataset("w.xy.nc", "r")
-co2_file = nc.Dataset("co2_path.xy.nc", "r")
-tke_file = nc.Dataset("test.default.0000000.nc", "r")
+u_xy_file = nc.Dataset("u.xy.nc", "r")  # type: ignore
+v_xy_file = nc.Dataset("v.xy.nc", "r")  # type: ignore
+w_xy_file = nc.Dataset("w.xy.nc", "r")  # type: ignore
+co2_xy_file = nc.Dataset("co2_path.xy.nc", "r")  # type: ignore
+tke_file = nc.Dataset("test.default.0000000.nc", "r")  # type: ignore
 
 # Extract the relevant data
-u_data = u_file.variables["u"]
-v_data = v_file.variables["v"]
-w_data = w_file.variables["w"]
-co2_data = co2_file.variables["co2_path"]
+u_xy_data = u_xy_file.variables["u"]
+v_xy_data = v_xy_file.variables["v"]
+w_xy_data = w_xy_file.variables["w"]
+co2_xy_data = co2_xy_file.variables["co2_path"]
 tke_data = tke_file["default"]["tke"]
-z = u_file.variables["z"][:]
+z_xy = u_xy_file.variables["z"][:]
 
 # Get the x, y, and time dimensions
-x = u_file.variables["xh"][:]
-y = u_file.variables["y"][:]
-time = u_file.variables["time"][:]  # Use only the first 25 time steps
+x_xy = u_xy_file.variables["xh"][:]
+y_xy = u_xy_file.variables["y"][:]
+# Use only the first 25 time steps
+START_IDX = 1000
+time_xy = u_xy_file.variables["time"][START_IDX : START_IDX + 25]
 
 # Create the figure and subplots
 fig = plt.figure(figsize=(12, 9))
 # make mosaic of 2x2 plots and one plot for TKE
-axs = fig.subplot_mosaic([["u", "v"], ["w", "co2"], ["tke", "tke"]])
-ax1, ax2, ax3, ax4, ax_tke = axs["u"], axs["v"], axs["w"], axs["co2"], axs["tke"]
+axs = fig.subplot_mosaic([["u_xy", "v_xy"], ["w_xy", "co2_xy"], ["tke_xy", "tke_xy"]])
+ax1_xy, ax2_xy, ax3_xy, ax4_xy, ax_tke_xy = (
+    axs["u_xy"],
+    axs["v_xy"],
+    axs["w_xy"],
+    axs["co2_xy"],
+    axs["tke_xy"],
+)
 
 # Create the colorbars
-u_norm = Normalize(vmin=u_data[:, 0, :, :].min(), vmax=u_data[:, 0, :, :].max())
-v_norm = Normalize(vmin=v_data[:, 0, :, :].min(), vmax=v_data[:, 0, :, :].max())
-w_norm = Normalize(vmin=w_data[:, 0, :, :].min(), vmax=w_data[:, 0, :, :].max())
-co2_norm = Normalize(vmin=co2_data[:].min(), vmax=co2_data[:].max())
-tke_norm = Normalize(
-    vmin=tke_data[: len(time), 2].min(), vmax=tke_data[: len(time), 2].max()
-)
+u_min, u_max = np.percentile(u_xy_data[START_IDX:, 0, :, :], [1, 99])
+u_xy_norm = Normalize(vmin=u_min, vmax=u_max)
 
-cbar1 = fig.colorbar(
-    ax1.imshow(
-        u_data[0, 0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=u_norm,
+v_min, v_max = np.percentile(v_xy_data[START_IDX:, 0, :, :], [1, 99])
+v_xy_norm = Normalize(vmin=v_min, vmax=v_max)
+
+w_min, w_max = np.percentile(w_xy_data[START_IDX:, 0, :, :], [1, 99])
+w_xy_norm = Normalize(vmin=w_min, vmax=w_max)
+
+co2_min, co2_max = np.percentile(co2_xy_data[START_IDX:, :, :], [1, 99.9])
+co2_xy_norm = Normalize(vmin=co2_min, vmax=co2_max)
+
+tke_min, tke_max = np.percentile(
+    tke_data[START_IDX : START_IDX + len(time_xy), 0], [0, 100]
+)
+# extend tke range by 10% of the range
+tke_min -= 0.1 * (tke_max - tke_min)
+tke_max += 0.1 * (tke_max - tke_min)
+tke_xy_norm = Normalize(vmin=tke_min, vmax=tke_max)
+
+cbar1_xy = fig.colorbar(
+    ax1_xy.imshow(
+        u_xy_data[START_IDX, 0, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        origin="lower",
     ),
-    ax=ax1,
+    ax=ax1_xy,
     aspect=15,
     pad=0.03,
     shrink=0.8,
 )
-cbar2 = fig.colorbar(
-    ax2.imshow(
-        v_data[0, 0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=v_norm,
+cbar1_xy.set_label(r"$u$ (m/s)")
+cbar2_xy = fig.colorbar(
+    ax2_xy.imshow(
+        v_xy_data[START_IDX, 0, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        origin="lower",
     ),
-    ax=ax2,
+    ax=ax2_xy,
     aspect=15,
     pad=0.03,
     shrink=0.8,
 )
-cbar3 = fig.colorbar(
-    ax3.imshow(
-        w_data[0, 0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=w_norm,
+cbar2_xy.set_label(r"$v$ (m/s)")
+cbar3_xy = fig.colorbar(
+    ax3_xy.imshow(
+        w_xy_data[START_IDX, 0, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        origin="lower",
     ),
-    ax=ax3,
+    ax=ax3_xy,
     aspect=15,
     pad=0.03,
     shrink=0.8,
 )
-cbar4 = fig.colorbar(
-    ax4.imshow(
-        co2_data[0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=co2_norm,
+cbar3_xy.set_label(r"$w$ (m/s)")
+cbar4_xy = fig.colorbar(
+    ax4_xy.imshow(
+        co2_xy_data[START_IDX, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        origin="lower",
     ),
-    ax=ax4,
+    ax=ax4_xy,
     aspect=15,
     pad=0.03,
     shrink=0.8,
 )
+cbar4_xy.set_label(r"CO$_2$ (a.u.)")
 
 
 # Function to update the plots
 def update_xy(frame):
-    print(f"Frame: {frame:4d}/{len(time)}", end="\r")
-    ax1.clear()
-    ax2.clear()
-    ax3.clear()
-    ax4.clear()
-    ax_tke.clear()
+    print(f"Frame: {frame+1:4d}/{len(time_xy)}", end="\r")
+    ax1_xy.clear()
+    ax2_xy.clear()
+    ax3_xy.clear()
+    ax4_xy.clear()
+    ax_tke_xy.clear()
 
-    # Plot the wind components at the lowest height
-    ax1.imshow(
-        u_data[frame, 0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=u_norm,
+    # Plot the wind components in the xy plane
+    ax1_xy.imshow(
+        u_xy_data[frame + START_IDX, 0, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        norm=u_xy_norm,
+        origin="lower",
     )
-    ax1.set_title(f"$u$ at $z={z[0]:.2f}$ m")
-    cbar1.set_alpha(1 if ax1.images else 0)
-    cbar1.set_label(r"$u$ (m/s)")
-    ax2.imshow(
-        v_data[frame, 0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=v_norm,
-    )
-    ax2.set_title(f"$v$ at $z={z[0]:.2f}$ m")
-    cbar2.set_alpha(1 if ax2.images else 0)
-    cbar2.set_label(r"$v$ (m/s)")
-    ax3.imshow(
-        w_data[frame, 0, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=w_norm,
-    )
-    ax3.set_title(f"$w$ at $z={z[0]:.2f}$ m")
-    cbar3.set_alpha(1 if ax3.images else 0)
-    cbar3.set_label(r"$w$ (m/s)")
+    ax1_xy.set_title(r"$u$")
+    ax1_xy.set_xlabel("x (m)")
+    ax1_xy.set_ylabel("y (m)")
 
-    # Plot the CO2 path concentration
-    ax4.imshow(
-        co2_data[frame, :, :],
-        cmap="viridis",
-        extent=(x[0], x[-1], y[0], y[-1]),
-        norm=co2_norm,
+    ax2_xy.imshow(
+        v_xy_data[frame + START_IDX, 0, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        norm=v_xy_norm,
+        origin="lower",
     )
-    ax4.set_title(r"CO$_2$ concentration (integrated)")
-    cbar4.set_alpha(1 if ax4.images else 0)
-    cbar4.set_label(r"CO$_2$ (a.u.)")
+    ax2_xy.set_title(r"$v$")
+    ax2_xy.set_xlabel("x (m)")
+    ax2_xy.set_ylabel("y (m)")
+
+    ax3_xy.imshow(
+        w_xy_data[frame + START_IDX, 0, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        norm=w_xy_norm,
+        origin="lower",
+    )
+    ax3_xy.set_title(r"$w$")
+    ax3_xy.set_xlabel("x (m)")
+    ax3_xy.set_ylabel("y (m)")
+
+    ax4_xy.imshow(
+        co2_xy_data[frame + START_IDX, :, :],
+        cmap="turbo",
+        extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
+        norm=co2_xy_norm,
+        origin="lower",
+    )
+    ax4_xy.set_title(r"CO$_2$ concentration")
+    ax4_xy.set_xlabel("x (m)")
+    ax4_xy.set_ylabel("y (m)")
 
     # Plot the TKE
-    ax_tke.plot(time, tke_data[: len(time), 2])
-    ax_tke.scatter(time[frame], tke_data[frame, 2], color="r")
-    ax_tke.vlines(time[frame], 0, tke_data[frame, 2], color="r", linestyle="--")
-    ax_tke.set_xlabel("Time (s)")
-    ax_tke.set_ylabel(r"TKE (m$^2$/s$^2$)")
-    ax_tke.set_title(f'Turbulent Kinetic Energy at $z={tke_file["z"][2]:.2f}$ m')
-    ax_tke.set_ylim(tke_norm.vmin, tke_norm.vmax)
+    ax_tke_xy.plot(time_xy, tke_data[START_IDX : START_IDX + len(time_xy), 0])
+    ax_tke_xy.scatter(time_xy[frame], tke_data[frame + START_IDX, 0], color="r", s=10)
+    ax_tke_xy.vlines(time_xy[frame], 0, 1000, color="r", linestyle="--", linewidth=1)
+    ax_tke_xy.set_xlabel("Time (s)")
+    ax_tke_xy.set_ylabel(r"TKE (m$^2$/s$^2$)")
+    ax_tke_xy.set_title(r"Total Turbulent Kinetic Energy")
+    ax_tke_xy.set_ylim(tke_xy_norm.vmin, tke_xy_norm.vmax)
 
-    fig.suptitle(f"Time step: {time[frame]:.2f} s", fontsize=24)
+    fig.suptitle(f"Time step: {time_xy[frame]:.2f} s", fontsize=24)
 
-    return [ax1, ax2, ax3, ax4, ax_tke, cbar1, cbar2, cbar3, cbar4]
+    return [
+        ax1_xy,
+        ax2_xy,
+        ax3_xy,
+        ax4_xy,
+        ax_tke_xy,
+        cbar1_xy,
+        cbar2_xy,
+        cbar3_xy,
+        cbar4_xy,
+    ]
 
 
 # Create the animation
-ani = FuncAnimation(fig, update_xy, frames=len(time), interval=50, blit=False)
+ani_xy = FuncAnimation(fig, update_xy, frames=len(time_xy), interval=50, blit=False)
 
 # Save the animation
-ani.save("wind_and_co2_animation.mp4", writer="ffmpeg")
+ani_xy.save("wind_and_co2_xy_animation.mp4", writer="ffmpeg")
 plt.close()
 
+
 # Open the relevant data files
-u_xz_file = nc.Dataset("u.xz.nc", "r")
-v_xz_file = nc.Dataset("v.xz.nc", "r")
-w_xz_file = nc.Dataset("w.xz.nc", "r")
-co2_xz_file = nc.Dataset("co2.xz.nc", "r")
-tke_file = nc.Dataset("test.default.0000000.nc", "r")
+u_xz_file = nc.Dataset("u.xz.nc", "r")  # type: ignore
+v_xz_file = nc.Dataset("v.xz.nc", "r")  # type: ignore
+w_xz_file = nc.Dataset("w.xz.nc", "r")  # type: ignore
+co2_xz_file = nc.Dataset("co2.xz.nc", "r")  # type: ignore
+tke_file = nc.Dataset("test.default.0000000.nc", "r")  # type: ignore
 
 # Extract the relevant data
 u_xz_data = u_xz_file.variables["u"]
@@ -178,7 +219,8 @@ z_xz = u_xz_file.variables["z"][:]
 x_xz = u_xz_file.variables["xh"][:]
 z_xz = u_xz_file.variables["z"][:]
 # Use only the first 25 time steps
-time_xz = u_xz_file.variables["time"][500:]
+START_IDX = 1000
+time_xz = u_xz_file.variables["time"][START_IDX : START_IDX + 25]
 
 # Create the figure and subplots
 fig = plt.figure(figsize=(12, 9))
@@ -193,28 +235,31 @@ ax1_xz, ax2_xz, ax3_xz, ax4_xz, ax_tke_xz = (
 )
 
 # Create the colorbars
-u_xz_norm = Normalize(
-    vmin=u_xz_data[500:, :, 0, :].min(), vmax=u_xz_data[500:, :, 0, :].max()
+u_min, u_max = np.percentile(u_xz_data[START_IDX:, :, 0, :], [1, 99])
+u_xz_norm = Normalize(vmin=u_min, vmax=u_max)
+
+v_min, v_max = np.percentile(v_xz_data[START_IDX:, :, 0, :], [1, 99])
+v_xz_norm = Normalize(vmin=v_min, vmax=v_max)
+
+w_min, w_max = np.percentile(w_xz_data[START_IDX:, :, 0, :], [1, 99])
+w_xz_norm = Normalize(vmin=w_min, vmax=w_max)
+
+co2_min, co2_max = np.percentile(co2_xz_data[START_IDX:, :, 0, :], [1, 99.9])
+co2_xz_norm = Normalize(vmin=co2_min, vmax=co2_max)
+
+tke_min, tke_max = np.percentile(
+    tke_data[START_IDX : START_IDX + len(time_xz), :].sum(axis=1), [0, 100]
 )
-v_xz_norm = Normalize(
-    vmin=v_xz_data[500:, :, 0, :].min(), vmax=v_xz_data[500:, :, 0, :].max()
-)
-w_xz_norm = Normalize(
-    vmin=w_xz_data[500:, :, 0, :].min(), vmax=w_xz_data[500:, :, 0, :].max()
-)
-co2_xz_norm = Normalize(
-    vmin=co2_xz_data[500:, :, 0, :].min(), vmax=co2_xz_data[500:, :, 0, :].max()
-)
-tke_xz_norm = Normalize(
-    vmin=tke_data[500 : 500 + len(time_xz), :].sum(axis=1).min(),
-    vmax=tke_data[500 : 500 + len(time_xz), :].sum(axis=1).max(),
-)
+# extend tke range by 10% of the range
+tke_min -= 0.1 * (tke_max - tke_min)
+tke_max += 0.1 * (tke_max - tke_min)
+tke_xz_norm = Normalize(vmin=tke_min, vmax=tke_max)
 
 cbar1_xz = fig.colorbar(
     ax1_xz.imshow(
-        u_xz_data[500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        u_xz_data[START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         origin="lower",
     ),
     ax=ax1_xz,
@@ -222,11 +267,12 @@ cbar1_xz = fig.colorbar(
     pad=0.03,
     shrink=0.8,
 )
+cbar1_xz.set_label(r"$u$ (m/s)")
 cbar2_xz = fig.colorbar(
     ax2_xz.imshow(
-        v_xz_data[500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        v_xz_data[START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         origin="lower",
     ),
     ax=ax2_xz,
@@ -234,11 +280,12 @@ cbar2_xz = fig.colorbar(
     pad=0.03,
     shrink=0.8,
 )
+cbar2_xz.set_label(r"$v$ (m/s)")
 cbar3_xz = fig.colorbar(
     ax3_xz.imshow(
-        w_xz_data[500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        w_xz_data[START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         origin="lower",
     ),
     ax=ax3_xz,
@@ -246,11 +293,12 @@ cbar3_xz = fig.colorbar(
     pad=0.03,
     shrink=0.8,
 )
+cbar3_xz.set_label(r"$w$ (m/s)")
 cbar4_xz = fig.colorbar(
     ax4_xz.imshow(
-        co2_xz_data[500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        co2_xz_data[START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         origin="lower",
     ),
     ax=ax4_xz,
@@ -258,6 +306,7 @@ cbar4_xz = fig.colorbar(
     pad=0.03,
     shrink=0.8,
 )
+cbar4_xz.set_label(r"CO$_2$ (a.u.)")
 
 
 # Function to update the plots
@@ -271,60 +320,57 @@ def update_xz(frame):
 
     # Plot the wind components in the xz plane
     ax1_xz.imshow(
-        u_xz_data[frame + 500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        u_xz_data[frame + START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         norm=u_xz_norm,
         origin="lower",
     )
     ax1_xz.set_title(r"$u$")
-    cbar1_xz.set_alpha(1 if ax1_xz.images else 0)
-    cbar1_xz.set_label(r"$u$ (m/s)")
+    ax1_xz.set_xlabel("x (m)")
+    ax1_xz.set_ylabel("z (m)")
 
     ax2_xz.imshow(
-        v_xz_data[frame + 500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        v_xz_data[frame + START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         norm=v_xz_norm,
         origin="lower",
     )
     ax2_xz.set_title(r"$v$")
-    cbar2_xz.set_alpha(1 if ax2_xz.images else 0)
-    cbar2_xz.set_label(r"$v$ (m/s)")
+    ax2_xz.set_xlabel("x (m)")
+    ax2_xz.set_ylabel("z (m)")
 
     ax3_xz.imshow(
-        w_xz_data[frame + 500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        w_xz_data[frame + START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         norm=w_xz_norm,
         origin="lower",
     )
     ax3_xz.set_title(r"$w$")
-    cbar3_xz.set_alpha(1 if ax3_xz.images else 0)
-    cbar3_xz.set_label(r"$w$ (m/s)")
+    ax3_xz.set_xlabel("x (m)")
+    ax3_xz.set_ylabel("z (m)")
 
     ax4_xz.imshow(
-        co2_xz_data[frame + 500, :, 0, :],
-        cmap="viridis",
-        extent=(x_xz[0], x_xz[-1], z_xz[-1], z_xz[0]),
+        co2_xz_data[frame + START_IDX, :, 0, :],
+        cmap="turbo",
+        extent=(x_xz[0], x_xz[-1], z_xz[0], z_xz[-1]),
         norm=co2_xz_norm,
         origin="lower",
     )
     ax4_xz.set_title(r"CO$_2$ concentration")
-    cbar4_xz.set_alpha(1 if ax4_xz.images else 0)
-    cbar4_xz.set_label(r"CO$_2$ (a.u.)")
+    ax4_xz.set_xlabel("x (m)")
+    ax4_xz.set_ylabel("z (m)")
 
     # Plot the TKE
-    ax_tke_xz.plot(time_xz, tke_data[500 : 500 + len(time_xz), :].sum(axis=1))
-    ax_tke_xz.scatter(time_xz[frame], tke_data[frame + 500, :].sum(), color="r", s=10)
-    ax_tke_xz.vlines(
-        time_xz[frame],
-        0,
-        tke_data[frame + 500, :].sum(),
-        color="r",
-        linestyle="--",
-        linewidth=1,
+    ax_tke_xz.plot(
+        time_xz, tke_data[START_IDX : START_IDX + len(time_xz), :].sum(axis=1)
     )
+    ax_tke_xz.scatter(
+        time_xz[frame], tke_data[frame + START_IDX, :].sum(), color="r", s=10
+    )
+    ax_tke_xz.vlines(time_xz[frame], 0, 1000, color="r", linestyle="--", linewidth=1)
     ax_tke_xz.set_xlabel("Time (s)")
     ax_tke_xz.set_ylabel(r"TKE (m$^2$/s$^2$)")
     ax_tke_xz.set_title(r"Total Turbulent Kinetic Energy")
