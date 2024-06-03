@@ -63,6 +63,7 @@ rm frames/*
 # move all files *.00* and *.01* to snaps_res_uflux/
 mv *.00* snaps_${res}_${uflux}
 mv *.01* snaps_${res}_${uflux}
+mv *.02* snaps_${res}_${uflux}
 
 # remove .out files
 rm *.out
