@@ -25,7 +25,7 @@ x_xy = u_xy_file.variables["xh"][:]
 y_xy = u_xy_file.variables["y"][:]
 # Use only the first 25 time steps
 START_IDX = 1000
-time_xy = u_xy_file.variables["time"][START_IDX : START_IDX + 25]
+time_xy = u_xy_file.variables["time"][START_IDX:]
 
 # Create the figure and subplots
 fig = plt.figure(figsize=(12, 9))
@@ -220,7 +220,7 @@ x_xz = u_xz_file.variables["xh"][:]
 z_xz = u_xz_file.variables["z"][:]
 # Use only the first 25 time steps
 START_IDX = 1000
-time_xz = u_xz_file.variables["time"][START_IDX : START_IDX + 25]
+time_xz = u_xz_file.variables["time"][START_IDX:]
 
 # Create the figure and subplots
 fig = plt.figure(figsize=(12, 9))
