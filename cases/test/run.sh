@@ -64,7 +64,7 @@ mkdir -p snaps_${res}_${uflux}_${sbot}/npy_files
 python3 cross_to_nc.py -n ${proc} > /dev/null 2>&1
 
 # move the created .nc files to snaps_res_uflux/nc_files
-mv *.nc snaps_${res}_${uflux}/nc_files
+mv *.nc snaps_${res}_${uflux}_${sbot}/nc_files
 
 # clear frames folder
 rm frames/*
