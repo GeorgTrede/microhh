@@ -83,34 +83,22 @@ nc_z = nc_file.createVariable("z", float_type, ("z"))
 nc_group_init = nc_file.createGroup("init")
 nc_u = nc_group_init.createVariable("u", float_type, ("z"))
 nc_u_nudge = nc_group_init.createVariable("u_nudge", float_type, ("z"))
-nc_nudge_fac = nc_group_init.createVariable("nudgefac", float_type, ("z"))
+# nc_nudge_fac = nc_group_init.createVariable("nudgefac", float_type, ("z"))
 nc_v = nc_group_init.createVariable("v", float_type, ("z"))
 nc_thl = nc_group_init.createVariable("thl", float_type, ("z"))
-nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
+# nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
 nc_co2 = nc_group_init.createVariable("co2", float_type, ("z"))
 nc_co2_inflow = nc_group_init.createVariable("co2_inflow", float_type, ("z"))
 
 nc_z[:] = z[:]
 nc_u[:] = u[:]
+nc_u_nudge[:] = u[:]
+# nc_nudge_fac[:] = np.ones(kmax)
 nc_v[:] = v[:]
 nc_thl[:] = thl[:]
-nc_qt[:] = qt[:]
+# nc_qt[:] = qt[:]
 nc_co2[:] = co2[:]
 nc_co2_inflow[:] = co2[:]
-
-# Define a vertically-varying nudging time scale
-nudgefac = np.ones(kmax) * 3600  # 1 hour
-nudgefac[:10] = 600  # 10 minutes near the surface
-nudgefac[-10:] = 7200  # 2 hours at the top
-
-# Apply the nudging gradually over time
-t_nudge = 3600  # Start nudging after 1 hour
-t = np.linspace(0, 259200, 43201)  # Time vector for the simulation
-nudge_strength = np.minimum(1.0, (t - t_nudge) / t_nudge)
-
-# Write the input NetCDF file
-nc_u_nudge[:] = u
-nc_nudge_fac[:] = nudgefac
 
 # nc_group_tdep = nc_file.createGroup("timedep")
 # nc_group_tdep.createDimension("time_surface", time.size)
