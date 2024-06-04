@@ -63,6 +63,7 @@ u = u_star / 0.4 * np.log((z + 1) / z0)
 # u = odeint(dUdz, 0, z, args=(u_star,)).flatten()
 
 v = np.zeros(kmax)
+w = np.zeros(kmax)
 co2 = np.zeros(kmax)
 
 # # Surface fluxes, again idealised from ERA5.
@@ -86,6 +87,8 @@ nc_u = nc_group_init.createVariable("u", float_type, ("z"))
 nc_u_nudge = nc_group_init.createVariable("u_nudge", float_type, ("z"))
 nc_nudge_fac = nc_group_init.createVariable("nudgefac", float_type, ("z"))
 nc_v = nc_group_init.createVariable("v", float_type, ("z"))
+nc_w = nc_group_init.createVariable("w", float_type, ("z"))
+nc_w_nudge = nc_group_init.createVariable("w_nudge", float_type, ("z"))
 nc_thl = nc_group_init.createVariable("thl", float_type, ("z"))
 nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
 nc_co2 = nc_group_init.createVariable("co2", float_type, ("z"))
@@ -94,8 +97,10 @@ nc_co2_inflow = nc_group_init.createVariable("co2_inflow", float_type, ("z"))
 nc_z[:] = z[:]
 nc_u[:] = u[:]
 nc_u_nudge[:] = u[:]
-nc_nudge_fac[:] = np.ones(kmax) / 60  # Nudging time scale in seconds
 nc_v[:] = v[:]
+nc_w[:] = w[:]
+nc_w_nudge[:] = w[:]
+nc_nudge_fac[:] = np.ones(kmax) / 60  # Nudging time scale in seconds
 nc_thl[:] = thl[:]
 nc_qt[:] = qt[:]
 nc_co2[:] = co2[:]
