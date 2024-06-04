@@ -86,7 +86,7 @@ nc_u_nudge = nc_group_init.createVariable("u_nudge", float_type, ("z"))
 nc_nudge_fac = nc_group_init.createVariable("nudgefac", float_type, ("z"))
 nc_v = nc_group_init.createVariable("v", float_type, ("z"))
 nc_thl = nc_group_init.createVariable("thl", float_type, ("z"))
-nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
+# nc_qt = nc_group_init.createVariable("qt", float_type, ("z"))
 nc_co2 = nc_group_init.createVariable("co2", float_type, ("z"))
 nc_co2_inflow = nc_group_init.createVariable("co2_inflow", float_type, ("z"))
 
@@ -96,7 +96,7 @@ nc_u_nudge[:] = u[:]
 nc_nudge_fac[:] = np.ones(kmax) * 4
 nc_v[:] = v[:]
 nc_thl[:] = thl[:]
-nc_qt[:] = qt[:]
+# nc_qt[:] = qt[:]
 nc_co2[:] = co2[:]
 nc_co2_inflow[:] = co2[:]
 
