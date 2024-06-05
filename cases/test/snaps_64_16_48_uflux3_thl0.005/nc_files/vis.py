@@ -11,14 +11,14 @@ else: FACTOR = 3
 
 # Open the relevant data files
 u_xy_file = nc.Dataset("u.xy.nc", "r")  # type: ignore
-v_xy_file = nc.Dataset("v.xy.nc", "r")  # type: ignore
+v_xy_file = nc.Dataset("p.xy.nc", "r")  # type: ignore
 w_xy_file = nc.Dataset("w.xy.nc", "r")  # type: ignore
 co2_xy_file = nc.Dataset("co2_path.xy.nc", "r")  # type: ignore
 tke_file = nc.Dataset("test.default.0000000.nc", "r")  # type: ignore
 
 # Extract the relevant data
 u_xy_data = u_xy_file.variables["u"]
-v_xy_data = v_xy_file.variables["v"]
+v_xy_data = v_xy_file.variables["p"]
 w_xy_data = w_xy_file.variables["w"]
 co2_xy_data = co2_xy_file.variables["co2_path"]
 tke_data = tke_file["default"]["tke"]
@@ -207,14 +207,14 @@ plt.close()
 
 # Open the relevant data files
 u_xz_file = nc.Dataset("u.xz.nc", "r")  # type: ignore
-v_xz_file = nc.Dataset("v.xz.nc", "r")  # type: ignore
+v_xz_file = nc.Dataset("p.xz.nc", "r")  # type: ignore
 w_xz_file = nc.Dataset("w.xz.nc", "r")  # type: ignore
 co2_xz_file = nc.Dataset("co2.xz.nc", "r")  # type: ignore
 tke_file = nc.Dataset("test.default.0000000.nc", "r")  # type: ignore
 
 # Extract the relevant data
 u_xz_data = u_xz_file.variables["u"]
-v_xz_data = v_xz_file.variables["v"]
+v_xz_data = v_xz_file.variables["p"]
 w_xz_data = w_xz_file.variables["w"]
 co2_xz_data = co2_xz_file.variables["co2"]
 tke_data = tke_file["default"]["tke"]
