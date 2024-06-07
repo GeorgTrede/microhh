@@ -5,20 +5,36 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.colors import Normalize
 import sys
+import warnings
 
-if len(sys.argv)>=2: FACTOR = int(sys.argv[1])
-else: FACTOR = 3
+warnings.filterwarnings("ignore", category=UserWarning)
+
+# parse command line arguments and:
+# - look for -f FACTOR in arguments (default 3)
+# - look for -s START_IDX in arguments (default 1000)
+
+FACTOR = 3
+START_IDX = 500
+for i, arg in enumerate(sys.argv):
+    if arg == "-f":
+        FACTOR = int(sys.argv[i + 1])
+    if arg == "-s":
+        START_IDX = int(sys.argv[i + 1])
+
+print(f"FACTOR: {FACTOR}, START_IDX: {START_IDX}")
+
+print("Creating xy plane animation")
 
 # Open the relevant data files
 u_xy_file = nc.Dataset("u.xy.nc", "r")  # type: ignore
-v_xy_file = nc.Dataset("p.xy.nc", "r")  # type: ignore
+v_xy_file = nc.Dataset("v.xy.nc", "r")  # type: ignore
 w_xy_file = nc.Dataset("w.xy.nc", "r")  # type: ignore
 co2_xy_file = nc.Dataset("co2_path.xy.nc", "r")  # type: ignore
 tke_file = nc.Dataset("test.default.0000000.nc", "r")  # type: ignore
 
 # Extract the relevant data
 u_xy_data = u_xy_file.variables["u"]
-v_xy_data = v_xy_file.variables["p"]
+v_xy_data = v_xy_file.variables["v"]
 w_xy_data = w_xy_file.variables["w"]
 co2_xy_data = co2_xy_file.variables["co2_path"]
 tke_data = tke_file["default"]["tke"]
@@ -27,8 +43,6 @@ z_xy = u_xy_file.variables["z"][:]
 # Get the x, y, and time dimensions
 x_xy = u_xy_file.variables["xh"][:]
 y_xy = u_xy_file.variables["y"][:]
-# Use only the first 25 time steps
-START_IDX = 1000
 time_xy = u_xy_file.variables["time"][START_IDX:]
 
 # Create the figure and subplots
@@ -198,23 +212,30 @@ def update_xy(frame):
 
 
 # Create the animation
-ani_xy = FuncAnimation(fig, update_xy, frames=len(time_xy)//FACTOR, interval=50, blit=False)
+ani_xy = FuncAnimation(
+    fig, update_xy, frames=len(time_xy) // FACTOR, interval=50, blit=False
+)
 
 # Save the animation
 ani_xy.save("wind_and_co2_xy_animation.mp4", writer="ffmpeg")
 plt.close()
 
+print()
+print("Saved wind_and_co2_xy_animation.mp4")
+
+
+print("Creating xz plane animation")
 
 # Open the relevant data files
 u_xz_file = nc.Dataset("u.xz.nc", "r")  # type: ignore
-v_xz_file = nc.Dataset("p.xz.nc", "r")  # type: ignore
+v_xz_file = nc.Dataset("v.xz.nc", "r")  # type: ignore
 w_xz_file = nc.Dataset("w.xz.nc", "r")  # type: ignore
 co2_xz_file = nc.Dataset("co2.xz.nc", "r")  # type: ignore
 tke_file = nc.Dataset("test.default.0000000.nc", "r")  # type: ignore
 
 # Extract the relevant data
 u_xz_data = u_xz_file.variables["u"]
-v_xz_data = v_xz_file.variables["p"]
+v_xz_data = v_xz_file.variables["v"]
 w_xz_data = w_xz_file.variables["w"]
 co2_xz_data = co2_xz_file.variables["co2"]
 tke_data = tke_file["default"]["tke"]
@@ -223,8 +244,6 @@ z_xz = u_xz_file.variables["z"][:]
 # Get the x, z, and time dimensions
 x_xz = u_xz_file.variables["xh"][:]
 z_xz = u_xz_file.variables["z"][:]
-# Use only the first 25 time steps
-START_IDX = 1000
 time_xz = u_xz_file.variables["time"][START_IDX:]
 
 # Create the figure and subplots
@@ -398,8 +417,13 @@ def update_xz(frame):
 
 
 # Create the animation
-ani_xz = FuncAnimation(fig, update_xz, frames=len(time_xz)//FACTOR, interval=50, blit=False)
+ani_xz = FuncAnimation(
+    fig, update_xz, frames=len(time_xz) // FACTOR, interval=50, blit=False
+)
 
 # Save the animation
 ani_xz.save("wind_and_co2_xz_animation.mp4", writer="ffmpeg")
 plt.close()
+
+print()
+print("Saved wind_and_co2_xz_animation.mp4")
