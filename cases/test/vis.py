@@ -234,8 +234,6 @@ z_xz = u_xz_file.variables["z"][:]
 # Get the x, z, and time dimensions
 x_xz = u_xz_file.variables["xh"][:]
 z_xz = u_xz_file.variables["z"][:]
-# Use only the first 25 time steps
-START_IDX = 1000
 time_xz = u_xz_file.variables["time"][START_IDX:]
 
 # Create the figure and subplots
