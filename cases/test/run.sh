@@ -37,6 +37,9 @@ run_and_display() {
         sleep 0.25
     done
 
+    # Print last line of output after the command has finished
+    echo -ne "\r\033[K$(tail -n 1 "$temp_file")"
+
     # Print a newline to separate the output from the next command
     echo
 }
