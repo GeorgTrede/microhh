@@ -27,8 +27,12 @@ run_and_display() {
 
     # Loop to update the display with the most recent output
     while kill -0 $cmd_pid 2>/dev/null; do
-        echo -ne "\r\033[K" # Clear the line
-        tail -n 1 "$temp_file" # Display the most recent line of output
+        # Capture the most recent line of output without introducing a new line
+        last_line=$(tail -n 1 "$temp_file")
+        
+        # Clear the line and print the last line without a newline at the end
+        echo -ne "\r\033[K${last_line}"
+        
         sleep 1 # Adjust sleep as needed
     done
 }
