@@ -22,7 +22,7 @@ for i, arg in enumerate(sys.argv):
         START_IDX = int(sys.argv[i + 1])
 
 print(f"FACTOR: {FACTOR}, START_IDX: {START_IDX}")
-
+print()
 print("Creating xy plane animation")
 
 # Open the relevant data files
@@ -222,8 +222,7 @@ plt.close()
 
 print()
 print("Saved wind_and_co2_xy_animation.mp4")
-
-
+print()
 print("Creating xz plane animation")
 
 # Open the relevant data files
@@ -427,3 +426,4 @@ plt.close()
 
 print()
 print("Saved wind_and_co2_xz_animation.mp4")
+print()

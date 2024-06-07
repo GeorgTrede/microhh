@@ -8,17 +8,37 @@ npx=$(awk -F "=" '/npx=/ && !/#/ {print $2}' ${1}.ini)
 npy=$(awk -F "=" '/npy=/ && !/#/ {print $2}' ${1}.ini)
 proc=$(($npx * $npy))
 
-# check which microhh version to use:
-# if the hostname is zilxap03, then use microhh_hera, else use microhh
+# Determine which version of microhh to use based on the hostname
 if [ "$HOSTNAME" == "zilxap03" ]; then
-    # run microhh_hera
-    mpiexec -n $proc microhh_hera init ${1}
-    mpiexec -n $proc microhh_hera run ${1}
+    command_prefix="microhh_hera"
 else
-    # run microhh
-    mpiexec -n $proc microhh init ${1}
-    mpiexec -n $proc microhh run ${1}
+    command_prefix="microhh"
 fi
+
+# Create a temporary file for storing command output
+temp_file=$(mktemp)
+
+# Define a function to run a command and display its most recent output
+run_and_display() {
+    local command=$1
+    # Execute the command and redirect output to the temp file
+    $command > "$temp_file" 2>&1 &
+    local cmd_pid=$!
+
+    # Loop to update the display with the most recent output
+    while kill -0 $cmd_pid 2>/dev/null; do
+        echo -ne "\r\033[K" # Clear the line
+        tail -n 1 "$temp_file" # Display the most recent line of output
+        sleep 1 # Adjust sleep as needed
+    done
+}
+
+# Run the commands with the determined prefix and display their most recent output
+run_and_display "mpiexec -n $proc ${command_prefix} init ${1}"
+run_and_display "mpiexec -n $proc ${command_prefix} run ${1}"
+
+# Clean up
+rm "$temp_file"
 
 # find resolution of the simulation
 # -> stored in .ini file under [grid] -> itot, jtot, ktot
