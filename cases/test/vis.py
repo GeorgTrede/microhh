@@ -7,7 +7,7 @@ from matplotlib.colors import Normalize
 import sys
 import warnings
 
-warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # parse command line arguments and:
 # - look for -f FACTOR in arguments (default 3)
@@ -22,6 +22,8 @@ for i, arg in enumerate(sys.argv):
         START_IDX = int(sys.argv[i + 1])
 
 print(f"FACTOR: {FACTOR}, START_IDX: {START_IDX}")
+
+print("Creating xy plane animation")
 
 # Open the relevant data files
 u_xy_file = nc.Dataset("u.xy.nc", "r")  # type: ignore
@@ -218,6 +220,11 @@ ani_xy = FuncAnimation(
 ani_xy.save("wind_and_co2_xy_animation.mp4", writer="ffmpeg")
 plt.close()
 
+print()
+print("Saved wind_and_co2_xy_animation.mp4")
+
+
+print("Creating xz plane animation")
 
 # Open the relevant data files
 u_xz_file = nc.Dataset("u.xz.nc", "r")  # type: ignore
@@ -417,3 +424,6 @@ ani_xz = FuncAnimation(
 # Save the animation
 ani_xz.save("wind_and_co2_xz_animation.mp4", writer="ffmpeg")
 plt.close()
+
+print()
+print("Saved wind_and_co2_xz_animation.mp4")
