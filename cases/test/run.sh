@@ -79,3 +79,6 @@ mv *.02* snaps_${res}_${uflux}_${sbot}
 
 # remove .out files
 rm *.out
+
+# echo that the run is finished and the files are stored in the respective folders
+echo "Run finished. Files are stored in snaps_${res}_${uflux}_${sbot}/"
