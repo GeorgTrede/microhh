@@ -22,7 +22,7 @@ temp_file=$(mktemp)
 run_and_display() {
     local command=$1
     # Execute the command and redirect output to the temp file
-    $command > "$temp_file" 2>&1 &
+    $command > "$temp_file" &
     local cmd_pid=$!
 
     # Loop to update the display with the most recent output
