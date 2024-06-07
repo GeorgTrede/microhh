@@ -33,7 +33,8 @@ run_and_display() {
         # Clear the line and print the last line without a newline at the end
         echo -ne "\r\033[K${last_line}"
         
-        sleep 1 # Adjust sleep as needed
+        # Wait for 0.25 seconds before checking the output again
+        sleep 0.25
     done
 
     # Print a newline to separate the output from the next command
