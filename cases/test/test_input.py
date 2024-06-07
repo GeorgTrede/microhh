@@ -44,8 +44,8 @@ qt = np.interp(z, z_qt, v_qt)
 # u = np.interp(z, z_u, v_u)
 
 # logarithmic profile of u
-u_star = 0.3
-z0 = 35.5
+u_star = 0.2
+z0 = 0.2
 u = u_star / 0.4 * np.log((z + 1) / z0)
 
 
