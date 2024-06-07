@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 from matplotlib.colors import Normalize
 import sys
+import warnings
+
 
 # parse command line arguments and:
 # - look for -f FACTOR in arguments (default 3)
@@ -52,22 +54,24 @@ ax1_xy, ax2_xy, ax3_xy, ax4_xy, ax_tke_xy = (
     axs["tke_xy"],
 )
 
-# Create the colorbars
-u_min, u_max = np.percentile(u_xy_data[START_IDX:, 0, :, :], [1, 99])
-u_xy_norm = Normalize(vmin=u_min, vmax=u_max)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", DeprecationWarning)
+    # Create the colorbars
+    u_min, u_max = np.percentile(u_xy_data[START_IDX:, 0, :, :], [1, 99])
+    u_xy_norm = Normalize(vmin=u_min, vmax=u_max)
 
-v_min, v_max = np.percentile(v_xy_data[START_IDX:, 0, :, :], [1, 99])
-v_xy_norm = Normalize(vmin=v_min, vmax=v_max)
+    v_min, v_max = np.percentile(v_xy_data[START_IDX:, 0, :, :], [1, 99])
+    v_xy_norm = Normalize(vmin=v_min, vmax=v_max)
 
-w_min, w_max = np.percentile(w_xy_data[START_IDX:, 0, :, :], [1, 99])
-w_xy_norm = Normalize(vmin=w_min, vmax=w_max)
+    w_min, w_max = np.percentile(w_xy_data[START_IDX:, 0, :, :], [1, 99])
+    w_xy_norm = Normalize(vmin=w_min, vmax=w_max)
 
-co2_min, co2_max = np.percentile(co2_xy_data[START_IDX:, :, :], [1, 99.9])
-co2_xy_norm = Normalize(vmin=co2_min, vmax=co2_max)
+    co2_min, co2_max = np.percentile(co2_xy_data[START_IDX:, :, :], [1, 99.9])
+    co2_xy_norm = Normalize(vmin=co2_min, vmax=co2_max)
 
-tke_min, tke_max = np.percentile(
-    tke_data[START_IDX : START_IDX + len(time_xy), 0], [0, 100]
-)
+    tke_min, tke_max = np.percentile(
+        tke_data[START_IDX : START_IDX + len(time_xy), 0], [0, 100]
+    )
 # extend tke range by 10% of the range
 tke_min -= 0.1 * (tke_max - tke_min)
 tke_max += 0.1 * (tke_max - tke_min)
@@ -248,22 +252,24 @@ ax1_xz, ax2_xz, ax3_xz, ax4_xz, ax_tke_xz = (
     axs["tke_xz"],
 )
 
-# Create the colorbars
-u_min, u_max = np.percentile(u_xz_data[START_IDX:, :, 0, :], [1, 99])
-u_xz_norm = Normalize(vmin=u_min, vmax=u_max)
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", DeprecationWarning)
+    # Create the colorbars
+    u_min, u_max = np.percentile(u_xz_data[START_IDX:, :, 0, :], [1, 99])
+    u_xz_norm = Normalize(vmin=u_min, vmax=u_max)
 
-v_min, v_max = np.percentile(v_xz_data[START_IDX:, :, 0, :], [1, 99])
-v_xz_norm = Normalize(vmin=v_min, vmax=v_max)
+    v_min, v_max = np.percentile(v_xz_data[START_IDX:, :, 0, :], [1, 99])
+    v_xz_norm = Normalize(vmin=v_min, vmax=v_max)
 
-w_min, w_max = np.percentile(w_xz_data[START_IDX:, :, 0, :], [1, 99])
-w_xz_norm = Normalize(vmin=w_min, vmax=w_max)
+    w_min, w_max = np.percentile(w_xz_data[START_IDX:, :, 0, :], [1, 99])
+    w_xz_norm = Normalize(vmin=w_min, vmax=w_max)
 
-co2_min, co2_max = np.percentile(co2_xz_data[START_IDX:, :, 0, :], [1, 99.9])
-co2_xz_norm = Normalize(vmin=co2_min, vmax=co2_max)
+    co2_min, co2_max = np.percentile(co2_xz_data[START_IDX:, :, 0, :], [1, 99.9])
+    co2_xz_norm = Normalize(vmin=co2_min, vmax=co2_max)
 
-tke_min, tke_max = np.percentile(
-    tke_data[START_IDX : START_IDX + len(time_xz), :].sum(axis=1), [0, 100]
-)
+    tke_min, tke_max = np.percentile(
+        tke_data[START_IDX : START_IDX + len(time_xz), :].sum(axis=1), [0, 100]
+    )
 # extend tke range by 10% of the range
 tke_min -= 0.1 * (tke_max - tke_min)
 tke_max += 0.1 * (tke_max - tke_min)
