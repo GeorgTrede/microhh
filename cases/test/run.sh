@@ -35,6 +35,9 @@ run_and_display() {
         
         sleep 1 # Adjust sleep as needed
     done
+
+    # Print a newline to separate the output from the next command
+    echo
 }
 
 # Run the commands with the determined prefix and display their most recent output
