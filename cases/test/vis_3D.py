@@ -11,18 +11,22 @@ warnings.filterwarnings("ignore", category=UserWarning)
 # parse command line arguments and:
 # - look for -f FACTOR in arguments (default 3)
 # - look for -s START_IDX in arguments (default 1000)
+# - look for -z Z_LEVEL in arguments (default 0)
 
 FACTOR = 3
 START_IDX = 500
+Z_LEVEL = 0
 for i, arg in enumerate(sys.argv):
     if arg == "-f":
         FACTOR = int(sys.argv[i + 1])
     if arg == "-s":
         START_IDX = int(sys.argv[i + 1])
+    if arg == "-z":
+        Z_LEVEL = int(sys.argv[i + 1])
 
-print(f"FACTOR: {FACTOR}, START_IDX: {START_IDX}")
+print(f"FACTOR: {FACTOR}, START_IDX: {START_IDX}, Z_LEVEL: {Z_LEVEL}")
 print()
-print("Creating xy plane animation")
+print("Creating xy plane and 3D animation")
 
 
 def update_projection(ax, name, projection="3d", fig=None):
@@ -72,14 +76,16 @@ ax1_xy, ax2_xy, ax3_xy, ax4_xy, ax_tke_xy = (
 )
 
 # Create the colorbars
-u_min, u_max = np.percentile(u_xy_data[START_IDX:, 0, :, :], [1, 99])
+u_min, u_max = np.percentile(u_xy_data[START_IDX:, Z_LEVEL, :, :], [1, 99])
 u_xy_norm = Normalize(vmin=u_min, vmax=u_max)
 
-v_min, v_max = np.percentile(v_xy_data[START_IDX:, 0, :, :], [1, 99])
+v_min, v_max = np.percentile(v_xy_data[START_IDX:, Z_LEVEL, :, :], [1, 99])
 v_xy_norm = Normalize(vmin=v_min, vmax=v_max)
 
-w_min, w_max = np.percentile(w_xy_data[START_IDX:, 0, :, :], [1, 99])
+w_min, w_max = np.percentile(w_xy_data[START_IDX:, Z_LEVEL, :, :], [1, 99])
 w_xy_norm = Normalize(vmin=w_min, vmax=w_max)
+
+co2_min, co2_max = np.percentile(co2_xy_data[START_IDX:, :, :, :], [5, 100])
 
 tke_min, tke_max = np.percentile(
     tke_data[START_IDX : START_IDX + len(time_xy), 0], [0, 100]
@@ -142,7 +148,7 @@ def update_xy(frame):
 
     # Plot the wind components in the xy plane
     ax1_xy.imshow(
-        u_xy_data[frame + START_IDX, 0, :, :],
+        u_xy_data[frame + START_IDX, Z_LEVEL, :, :],
         cmap="turbo",
         extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
         norm=u_xy_norm,
@@ -153,7 +159,7 @@ def update_xy(frame):
     ax1_xy.set_ylabel("y (m)")
 
     ax2_xy.imshow(
-        v_xy_data[frame + START_IDX, 0, :, :],
+        v_xy_data[frame + START_IDX, Z_LEVEL, :, :],
         cmap="turbo",
         extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
         norm=v_xy_norm,
@@ -164,7 +170,7 @@ def update_xy(frame):
     ax2_xy.set_ylabel("y (m)")
 
     ax3_xy.imshow(
-        w_xy_data[frame + START_IDX, 0, :, :],
+        w_xy_data[frame + START_IDX, Z_LEVEL, :, :],
         cmap="turbo",
         extent=(x_xy[0], x_xy[-1], y_xy[0], y_xy[-1]),
         norm=w_xy_norm,
@@ -176,14 +182,13 @@ def update_xy(frame):
 
     # Plot the 3D CO2 plume
     co2_data = co2_xy_data[frame + START_IDX, :, :, :]
-    co2_threshold = 0.5 * co2_data.max()
     ax4_xy.clear()
     ax4_xy.set_xlabel("x (m)")
     ax4_xy.set_ylabel("y (m)")
-    # ax4_xy.set_zlabel("z (m)")
+    ax4_xy.set_zlabel("z (m)")
     for z in range(co2_data.shape[0]):
         co2_slice = co2_data[z, :, :]
-        mask = co2_slice > co2_threshold
+        mask = co2_slice > co2_min
         x_coords, y_coords = np.meshgrid(x_xy, y_xy)
         ax4_xy.scatter(
             x_coords[mask],
@@ -203,7 +208,9 @@ def update_xy(frame):
 
     # Plot the TKE
     ax_tke_xy.plot(time_xy, tke_data[START_IDX : START_IDX + len(time_xy), 0])
-    ax_tke_xy.scatter(time_xy[frame], tke_data[frame + START_IDX, 0], color="r", s=10)
+    ax_tke_xy.scatter(
+        time_xy[frame], tke_data[frame + START_IDX, Z_LEVEL], color="r", s=10
+    )
     ax_tke_xy.vlines(time_xy[frame], 0, 1000, color="r", linestyle="--", linewidth=1)
     ax_tke_xy.set_xlabel("Time (s)")
     ax_tke_xy.set_ylabel(r"TKE (m$^2$/s$^2$)")
