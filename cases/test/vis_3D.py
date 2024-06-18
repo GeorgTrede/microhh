@@ -188,7 +188,7 @@ def update_xy(frame):
     ax4_xy.set_zlabel("z (m)")  # type: ignore
     for z in range(co2_data.shape[0]):
         co2_slice = co2_data[z, :, :]
-        mask = co2_slice > co2_min
+        mask = co2_slice > 0.05 * co2_max
         x_coords, y_coords = np.meshgrid(x_xy, y_xy)
         ax4_xy.scatter(
             x_coords[mask],
@@ -197,7 +197,7 @@ def update_xy(frame):
             c=co2_slice[mask],
             alpha=0.05,
             cmap="gray_r",
-            vmin=0,
+            vmin=-co2_max,
             vmax=co2_max,
         )
     ax4_xy.set_title(r"CO$_2$ concentration")
