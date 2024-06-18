@@ -197,7 +197,7 @@ def update_xy(frame):
             c=co2_slice[mask],
             alpha=0.05,
             cmap="gray_r",
-            vmin=co2_min,
+            vmin=0,
             vmax=co2_max,
         )
     ax4_xy.set_title(r"CO$_2$ concentration")
