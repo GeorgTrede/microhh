@@ -85,7 +85,7 @@ v_xy_norm = Normalize(vmin=v_min, vmax=v_max)
 w_min, w_max = np.percentile(w_xy_data[START_IDX:, Z_LEVEL, :, :], [1, 99])
 w_xy_norm = Normalize(vmin=w_min, vmax=w_max)
 
-co2_min, co2_max = np.percentile(co2_xy_data[START_IDX:, :, :, :], [5, 100])
+co2_min, co2_max = np.percentile(co2_xy_data[START_IDX:, :, :, :], [10, 100])
 
 tke_min, tke_max = np.percentile(
     tke_data[START_IDX : START_IDX + len(time_xy), 0], [0, 100]
@@ -195,7 +195,7 @@ def update_xy(frame):
             y_coords[mask],
             z_xy[z] * np.ones_like(x_coords[mask]),
             c=co2_slice[mask],
-            alpha=0.05,
+            alpha=0.01,
             cmap="gray",
             vmin=co2_min,
             vmax=co2_max,
