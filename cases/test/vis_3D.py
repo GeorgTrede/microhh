@@ -195,7 +195,7 @@ def update_xy(frame):
             y_coords[mask],
             z_xy[z] * np.ones_like(x_coords[mask]),
             c=co2_slice[mask],
-            alpha=0.025,
+            alpha=0.05,
             cmap="gray_r",
             vmin=co2_min,
             vmax=co2_max,
