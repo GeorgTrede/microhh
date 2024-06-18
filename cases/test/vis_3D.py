@@ -196,7 +196,7 @@ def update_xy(frame):
             z_xy[z] * np.ones_like(x_coords[mask]),
             c=co2_slice[mask],
             alpha=0.05,
-            cmap="gray_r",
+            cmap="gray",
         )
     ax4_xy.set_title(r"CO$_2$ concentration")
     # set axis limits
