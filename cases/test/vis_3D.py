@@ -185,7 +185,7 @@ def update_xy(frame):
     ax4_xy.clear()
     ax4_xy.set_xlabel("x (m)")
     ax4_xy.set_ylabel("y (m)")
-    ax4_xy.set_zlabel("z (m)")
+    ax4_xy.set_zlabel("z (m)")  # type: ignore
     for z in range(co2_data.shape[0]):
         co2_slice = co2_data[z, :, :]
         mask = co2_slice > co2_min
@@ -196,7 +196,7 @@ def update_xy(frame):
             z_xy[z] * np.ones_like(x_coords[mask]),
             c=co2_slice[mask],
             alpha=0.01,
-            cmap="gray",
+            cmap="gray_r",
             vmin=co2_min,
             vmax=co2_max,
         )
@@ -204,9 +204,9 @@ def update_xy(frame):
     # set axis limits
     ax4_xy.set_xlim(x_xy[0], x_xy[-1])
     ax4_xy.set_ylim(y_xy[0], y_xy[-1])
-    ax4_xy.set_zlim(0, 5000)
+    ax4_xy.set_zlim(0, 5000)  # type: ignore
     # set aspect ratio
-    ax4_xy.set_box_aspect([12, 3.2, 5.0])
+    ax4_xy.set_box_aspect([12, 3.2, 5.0])  # type: ignore
 
     # Plot the TKE
     ax_tke_xy.plot(time_xy, tke_data[START_IDX : START_IDX + len(time_xy), 0])
